@@ -1,0 +1,9 @@
+name = "adalox"
+description = "Implementation of the Lox language written in Ada."
+version = "0.1.0-dev"
+
+authors = ["Dan Vu"]
+maintainers = ["Dan Vu <danvu.hustle@gmail.com>"]
+maintainers-logins = ["vushu"]
+
+executables = ["adalox"]
