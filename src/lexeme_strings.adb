@@ -1,6 +1,6 @@
 package body Lexeme_Strings is
 
-   function Create_Lexeme_String (Source : String) return Lexeme_String is
+   function Make_Lexeme_String (Source : String) return Lexeme_String is
       Lex_String : Lexeme_String;
       Len        : constant Natural := Source'Length;
    begin
@@ -16,7 +16,7 @@ package body Lexeme_Strings is
       end if;
 
       return Lex_String;
-   end Create_Lexeme_String;
+   end Make_Lexeme_String;
 
    function To_String (Source : Lexeme_String) return String is
    begin

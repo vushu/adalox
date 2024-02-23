@@ -1,23 +1,18 @@
 with Ada.Text_IO; use Ada.Text_IO;
 package body Tokens is
-   procedure Do_Stuff is
-   begin
-      Put_Line ("safsafdasdfa");
-   end Do_Stuff;
-
-   function Create_Token return Token is
+   function Create_Token (TK : Token_Kind) return Token is
       T : Token;
    begin
-      T.Kind   := LEFT_PAREN;
-      T.Line   := 100;
-      T.Lexeme := Create_Lexeme_String ("");
+      T.Kind   := TK;
+      T.Line   := 1;
+      T.Lexeme := Make_Lexeme_String ("");
       return T;
    end Create_Token;
 
    function Create_Token (TK : Token_Kind; S : String) return Token is
       T : Token;
    begin
-      T.Lexeme := Create_Lexeme_String (S);
+      T.Lexeme := Make_Lexeme_String (S);
       T.Kind   := TK;
       T.Line   := 1;
       return T;
