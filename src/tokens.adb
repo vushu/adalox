@@ -9,14 +9,23 @@ package body Tokens is
       T : Token;
    begin
       T.Kind   := LEFT_PAREN;
-      T.Lexeme := SB.To_Bounded_String ("MAMA");
       T.Line   := 100;
+      T.Lexeme := Create_Lexeme_String ("");
+      return T;
+   end Create_Token;
+
+   function Create_Token (TK : Token_Kind; S : String) return Token is
+      T : Token;
+   begin
+      T.Lexeme := Create_Lexeme_String (S);
+      T.Kind   := TK;
+      T.Line   := 1;
       return T;
    end Create_Token;
 
    procedure Print_Lexeme (T : Token) is
    begin
-      Put_Line (SB.To_String (T.Lexeme));
+      Put_Line (To_String (T.Lexeme));
    end Print_Lexeme;
 
 end Tokens;
