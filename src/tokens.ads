@@ -1,4 +1,6 @@
 with Lexeme_Strings; use Lexeme_Strings;
+with Ada.Containers; use Ada.Containers;
+with Ada.Containers.Vectors;
 package Tokens is
 
    type Token_Kind is
@@ -19,4 +21,9 @@ package Tokens is
    procedure Print_Lexeme (T : Token);
    function Create_Token (TK : Token_Kind) return Token;
    function Create_Token (TK : Token_Kind; S : String) return Token;
+
+   package Token_list is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => Token);
+   subtype Token_Vector is Token_list.Vector;
+
 end Tokens;
