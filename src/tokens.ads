@@ -19,6 +19,7 @@ package Tokens is
    end record;
 
    procedure Print_Lexeme (T : Token);
+   procedure Print_Token (T : Token);
    function Create_Token (TK : Token_Kind) return Token;
    function Create_Token (TK : Token_Kind; S : String) return Token;
 

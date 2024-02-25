@@ -23,4 +23,8 @@ package body Tokens is
       Put_Line (To_String (T.Lexeme));
    end Print_Lexeme;
 
+   procedure Print_Token (T : Token) is
+   begin
+      Put_Line (To_String (T.Lexeme) & " ");
+   end Print_Token;
 end Tokens;
