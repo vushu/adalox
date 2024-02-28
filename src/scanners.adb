@@ -1,10 +1,29 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Characters.Latin_1;
 package body Scanners is
+   ------- STATE
+   Start       : Natural              := 1;
+   Source      : String (1 .. 10_240) := (others => ' ');
+   Tokens      : Token_Vector;
+   Current     : Natural;
+   Line        : Natural;
+   Source_Size : Positive;
+
    LF  : constant Character := Ada.Characters.Latin_1.LF;
    NUL : constant Character := Ada.Characters.Latin_1.NUL;
    CR  : constant Character := Ada.Characters.Latin_1.CR;
    HT  : constant Character := Ada.Characters.Latin_1.HT;
+
+   procedure Add_Token (TK : Token_Kind; Lexeme : String) is
+      T : constant Token := Create_Token (TK => TK, S => Lexeme);
+   begin
+      Tokens.Append (T);
+   end Add_Token;
+
+   procedure Add_Token (TK : Token_Kind) is
+   begin
+      Add_Token (TK => TK, Lexeme => Source (Start .. Current - 1));
+   end Add_Token;
 
    function Is_At_End return Boolean is
    begin
@@ -39,16 +58,6 @@ package body Scanners is
       Current := Current + 1;
       return C;
    end Advance;
-
-   function Scan_Tokens (Src : String) return Token_Vector is
-   begin
-      Source_Size                    := Src'Last;
-      Source (Src'First .. Src'Last) := Src;
-      while not Is_At_End loop
-         Scan_Token;
-      end loop;
-      return Tokens;
-   end Scan_Tokens;
 
    procedure Scan_Token is
       C : Character;
@@ -106,15 +115,14 @@ package body Scanners is
 
    end Scan_Token;
 
-   procedure Add_Token (TK : Token_Kind) is
+   function Scan_Tokens (Src : String) return Token_Vector is
    begin
-      Add_Token (TK => TK, Lexeme => Source (Start .. Current - 1));
-   end Add_Token;
-
-   procedure Add_Token (TK : Token_Kind; Lexeme : String) is
-      T : constant Token := Create_Token (TK => TK, S => Lexeme);
-   begin
-      Tokens.Append (T);
-   end Add_Token;
+      Source_Size                    := Src'Last;
+      Source (Src'First .. Src'Last) := Src;
+      while not Is_At_End loop
+         Scan_Token;
+      end loop;
+      return Tokens;
+   end Scan_Tokens;
 
 end Scanners;
