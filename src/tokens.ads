@@ -1,6 +1,7 @@
 with Lexeme_Strings; use Lexeme_Strings;
 with Ada.Containers; use Ada.Containers;
 with Ada.Containers.Vectors;
+with Literals;       use Literals;
 package Tokens is
 
    type Token_Kind is
@@ -13,15 +14,16 @@ package Tokens is
       TOK_THIS, TOK_TRUE, TOK_VAR, TOK_WHILE, TOK_EOF);
 
    type Token is record
-      Kind   : Token_Kind;
-      Lexeme : Lexeme_String;
-      Line   : Positive;
+      Kind          : Token_Kind;
+      Lexeme        : Lexeme_String;
+      Literal_Value : Literal (Nothing);
+      Line          : Positive;
    end record;
 
    procedure Print_Lexeme (T : Token);
    procedure Print_Token (T : Token);
-   function Create_Token (TK : Token_Kind) return Token;
-   function Create_Token (TK : Token_Kind; S : String) return Token;
+   function Create_Token
+     (TK : Token_Kind; S : String; L : Literal) return Token;
 
    package Token_list is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Token);
