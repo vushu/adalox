@@ -7,7 +7,7 @@ package body Scanners is
    Start       : constant Natural     := 1;
    Source      : String (1 .. 10_240) := (others => ' ');
    Tokens      : Token_Vector;
-   Current     : Natural;
+   Current     : Natural              := 1;
    Line        : Natural;
    Source_Size : Positive;
 
@@ -30,7 +30,7 @@ package body Scanners is
 
    function Is_At_End return Boolean is
    begin
-      return Current >= Source_Size;
+      return Current > Source_Size;
    end Is_At_End;
    function Match (Expected : Character) return Boolean is
    begin
@@ -57,6 +57,7 @@ package body Scanners is
    function Advance return Character is
       C : Character;
    begin
+      Put_Line ("CURRENT: " & Integer'Image (Current));
       C       := Source (Current);
       Current := Current + 1;
       return C;
@@ -99,6 +100,7 @@ package body Scanners is
       C := Advance;
       case C is
          when '(' =>
+            Put_Line ("ADDED LEFT PAREN");
             Add_Token (TOK_LEFT_PAREN);
          when ')' =>
             Add_Token (TOK_RIGHT_PAREN);
@@ -152,6 +154,7 @@ package body Scanners is
 
    function Scan_Tokens (Src : String) return Token_Vector is
    begin
+      Put_Line ("Scan_TOKENS");
       Source_Size                    := Src'Last;
       Source (Src'First .. Src'Last) := Src;
       while not Is_At_End loop

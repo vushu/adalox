@@ -1,7 +1,9 @@
-with Ada.Text_IO; use Ada.Text_IO;
-with Tokens; use Tokens;
+with AUnit.Reporter.Text;
+with AUnit.Run;
+with Scanners_Suites; use Scanners_Suites;
 procedure Tests is
-   T : Token;
+   procedure Runner is new AUnit.Run.Test_Runner (Suite);
+   Reporter : AUnit.Reporter.Text.Text_Reporter;
 begin
-   Put_Line ("sdfsadf");
+   Runner (Reporter);
 end Tests;
