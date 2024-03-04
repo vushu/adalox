@@ -4,7 +4,7 @@ package body Lexeme_Strings is
       Lex_String : Lexeme_String;
       Len        : constant Natural := Source'Length;
    begin
-      -- This will init the array to be all in whitespaces.
+      --  This will init the array to be all in whitespaces.
       Lex_String.Data   := (others => ' ');
       Lex_String.Length := 0;
 
