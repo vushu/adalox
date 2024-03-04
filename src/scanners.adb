@@ -32,6 +32,7 @@ package body Scanners is
    begin
       return Current > Source_Size;
    end Is_At_End;
+
    function Match (Expected : Character) return Boolean is
    begin
       if Is_At_End then
