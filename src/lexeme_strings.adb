@@ -1,3 +1,4 @@
+with Ada.Text_IO; use Ada.Text_IO;
 package body Lexeme_Strings is
 
    function Make_Lexeme_String (Source : String) return Lexeme_String is

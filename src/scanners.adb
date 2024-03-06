@@ -4,7 +4,7 @@ with Literals;       use Literals;
 with Lexeme_Strings; use Lexeme_Strings;
 package body Scanners is
    ------- STATE
-   Start       : Natural              := 1;
+   Start       : Natural              := 0;
    Source      : String (1 .. 10_240) := (others => ' ');
    Tokens      : Token_Vector;
    Current     : Natural              := 1;
@@ -18,8 +18,9 @@ package body Scanners is
 
    procedure Add_Token (TK : Token_Kind; L : Literal) is
       T : Token;
+      Lexeme : String := Source (Start .. Current - 1);
    begin
-      T := Create_Token (TK, Source (Start .. Current), L);
+      T := Create_Token (TK, Lexeme, L);
       Tokens.Append (T);
    end Add_Token;
 
@@ -58,7 +59,7 @@ package body Scanners is
    function Advance return Character is
       C : Character;
    begin
-      Put_Line ("CURRENT: " & Integer'Image (Current));
+      --  Put_Line ("CURRENT: " & Integer'Image (Current));
       C       := Source (Current);
       Current := Current + 1;
       return C;
@@ -101,7 +102,6 @@ package body Scanners is
       C := Advance;
       case C is
          when '(' =>
-            Put_Line ("ADDED LEFT PAREN");
             Add_Token (TOK_LEFT_PAREN);
          when ')' =>
             Add_Token (TOK_RIGHT_PAREN);
@@ -155,7 +155,6 @@ package body Scanners is
 
    function Scan_Tokens (Src : String) return Token_Vector is
    begin
-      Put_Line ("Scan_TOKENS");
       Source_Size                    := Src'Last;
       Source (Src'First .. Src'Last) := Src;
       while not Is_At_End loop
