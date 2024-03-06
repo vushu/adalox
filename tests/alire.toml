@@ -7,11 +7,18 @@ maintainers = ["Dan Vu <danvu.hustle@gmail.com>"]
 maintainers-logins = ["vushu"]
 
 executables = ["tests"]
+
 [[depends-on]]
 adalox = "~0.1.0-dev"
+
 [[pins]]
 adalox = { path='..' }
+
 [[depends-on]]
 aunit = "^24.0.0"
+
 [[depends-on]]
 gnatcov = "^22.0.1"
+
+[build-profiles]
+adalox = "development"

@@ -1,4 +1,4 @@
-package Lexeme_Strings is
+package Lexeme_Strings with SPARK_Mode is
    Max : constant Integer := 255;
    type Lexeme_String is private;
 

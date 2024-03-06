@@ -4,7 +4,7 @@ with Literals;       use Literals;
 with Lexeme_Strings; use Lexeme_Strings;
 package body Scanners is
    ------- STATE
-   Start       : constant Natural     := 1;
+   Start       : Natural              := 1;
    Source      : String (1 .. 10_240) := (others => ' ');
    Tokens      : Token_Vector;
    Current     : Natural              := 1;
@@ -159,6 +159,7 @@ package body Scanners is
       Source_Size                    := Src'Last;
       Source (Src'First .. Src'Last) := Src;
       while not Is_At_End loop
+         Start := Current;
          Scan_Token;
       end loop;
       return Tokens;
