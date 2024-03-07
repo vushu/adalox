@@ -12,5 +12,7 @@
 			"path": "../src"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.tabSize": 3
+	}
 }

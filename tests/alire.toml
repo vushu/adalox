@@ -10,7 +10,7 @@ executables = ["tests"]
 
 [[depends-on]]
 adalox = "~0.1.0-dev"
-aunit = "^23.0.0"
+aunit = "^22.0.0"
 gnatcov = "^22.0.1"
 
 [[pins]]

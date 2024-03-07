@@ -1,5 +1,6 @@
 with AUnit.Assertions; use AUnit.Assertions;
 with Lexeme_Strings;   use Lexeme_Strings;
+--  with Tokens;           use Tokens;
 package body Scanners.Test is
 
    overriding function Name (T : Test) return AUnit.Message_String is
@@ -8,8 +9,7 @@ package body Scanners.Test is
       return AUnit.Format ("Test Scanners package");
    end Name;
 
-   overriding procedure Run_Test (T : in out Test) is
-      pragma Unreferenced (T);
+   procedure Test_Single_Tokens is
       TokenList    : Token_Vector;
       Count        : Integer;
       Input_String : constant String := "+-*/.{-";
@@ -23,6 +23,12 @@ package body Scanners.Test is
            (To_String (TokenList (Index).Lexeme) = Current_Char,
             "Should be " & Current_Char);
       end loop;
-   end Run_Test;
 
+   end Test_Single_Tokens;
+
+   overriding procedure Run_Test (T : in out Test) is
+      pragma Unreferenced (T);
+   begin
+      Test_Single_Tokens;
+   end Run_Test;
 end Scanners.Test;
