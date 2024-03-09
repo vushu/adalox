@@ -1,6 +1,11 @@
 with Ada.Text_IO; use Ada.Text_IO;
 package body Lexeme_Strings is
 
+   function "=" (Left : Lexeme_String; Right : String) return Boolean is
+   begin
+      return To_String (Source => Left) = Right;
+   end "=";
+
    function Make_Lexeme_String (Source : String) return Lexeme_String is
       Lex_String : Lexeme_String;
       Len        : constant Natural := Source'Length;
