@@ -136,7 +136,7 @@ package body Scanners is
                if Match ('/') then
                   while Peek /= LF and then not Is_At_End loop
                      --  Skipping characters
-                     Current := Current + 1;
+                     Skip;
                   end loop;
                else
                   Add_Token (TOK_SLASH);
