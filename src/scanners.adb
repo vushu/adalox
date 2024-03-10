@@ -19,7 +19,7 @@ package body Scanners is
 
       procedure Add_Token (TK : Token_Kind; L : Literal) is
          T      : Token;
-         Lexeme : String := Source (Start .. Current - 1);
+         Lexeme : constant String := Source (Start .. Current - 1);
       begin
          T := Create_Token (TK, Lexeme, L);
          Tokens.Append (T);
@@ -72,6 +72,8 @@ package body Scanners is
       end Skip;
 
       procedure Handle_String is
+         Lexeme     : Lexeme_String;
+         String_Var : Literal (Kind => String_Type);
       begin
          while Peek /= '"' and then not Is_At_End loop
             if Peek = LF then
@@ -87,14 +89,12 @@ package body Scanners is
          --  The closing ".
          Skip;
 
-         Add_Token
-           (TOK_STRING,
-            (Kind       => String_Type,
-             String_Val =>
-               Make_Lexeme_String
-                 (Source
-                    (Start + 1 ..
-                         Current - 1)))); --  Trim the quoutes away.
+         Lexeme := Make_Lexeme_String (Source (Start + 1 .. Current - 1));
+         String_Var.String_Val := Lexeme;
+
+         --  String_Var := (String_Val => Lexeme);
+
+         Add_Token (TOK_STRING, String_Var);
 
       end Handle_String;
 

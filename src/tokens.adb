@@ -5,10 +5,10 @@ package body Tokens is
    is
       T : Token;
    begin
-      T.Lexeme  := Make_Lexeme_String (S);
+      T.Lexeme        := Make_Lexeme_String (S);
       T.Literal_Value := L;
-      T.Kind    := TK;
-      T.Line    := 1;
+      T.Kind          := TK;
+      T.Line          := 1;
       return T;
    end Create_Token;
 

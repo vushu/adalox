@@ -16,7 +16,7 @@ package Tokens is
    type Token is record
       Kind          : Token_Kind;
       Lexeme        : Lexeme_String;
-      Literal_Value : Literal (Nothing);
+      Literal_Value : Literal;
       Line          : Positive;
    end record;
 
