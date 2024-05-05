@@ -30,9 +30,8 @@ package body Scanners.Test is
    procedure Test_Handling_String is
       Input_String : constant String       := """Hej med dig""";
       TokenList    : constant Token_Vector := Scan_Tokens (Input_String);
-      T            : Token;
+      T : Token := TokenList (0);
    begin
-      T := TokenList (0);
       Assert (T.Lexeme = Input_String, "Should be the same");
    end Test_Handling_String;
 

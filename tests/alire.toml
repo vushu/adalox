@@ -1,5 +1,5 @@
 name = "tests"
-description = "Shiny new project"
+description = "Unit test project"
 version = "0.1.0-dev"
 
 authors = ["Dan Vu"]
