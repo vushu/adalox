@@ -5,16 +5,16 @@ with Tokens;           use Tokens;
 with Lexeme_Strings;   use Lexeme_Strings;
 with Literals;         use Literals;
 package body Parser_Test is
-   type Expr_Access is access Expr;
 
    procedure Can_Create_Expr is
-      LIT : Literal (Kind => String_Type);
-      T   : Token;
-      E   : Expr_Access := new Expr (Kind => Literal_Kind_Type);
+      Tok : Token := Create_Token (TOK_MINUS, "-", Literal'(Kind => Nothing));
+      Lit          : Literal     := Literal'(Int_Type, 1);
+      Literal_Expr : Expr_Access := new Expr'(Literal_Kind_Type, Lit);
+      Unary_Expr   : Expr        := Expr'(Unary_Kind_Type, Literal_Expr, Tok);
    begin
-      LIT.String_Val := Make_Lexeme_String ("Heje");
-      T              := Create_Token (TK => TOK_STRING, S => "Heje", L => LIT);
-
+      Put_Line ("Can Create Expr");
+      Assert
+        (Unary_Expr.Unary_Right.Value.Int_Val = 1, "Should be equal.");
    end Can_Create_Expr;
 
    overriding function Name (T : Test) return AUnit.Message_String is

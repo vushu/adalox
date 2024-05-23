@@ -10,8 +10,7 @@ executables = ["tests"]
 
 [[depends-on]]
 adalox = "~0.1.0-dev"
-aunit = "^22.0.0"
-gnatcov = "^22.0.1"
+aunit = "^24.0.0"
 
 [[pins]]
 adalox = { path='..' }

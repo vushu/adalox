@@ -9,14 +9,17 @@ package AST is
       Variable_Kind_Type, Logical_Kind_Type);
    type Expr (Kind : Expr_Kind) is record
       case Kind is
-         when Unary_Kind_Type | Binary_Kind_Type | Logical_Kind_Type =>
+         when Unary_Kind_Type =>
+            Unary_Right  : Expr_Access;
+            Unary_Op    : Token;
+         when Binary_Kind_Type | Logical_Kind_Type =>
             Left  : Expr_Access;
             Right : Expr_Access;
             Op    : Token;
          when Grouping_Kind_Type =>
             Expression : Expr_Access;
          when Literal_Kind_Type =>
-            Literal_Kind_Value : Literal;
+            Value : Literal;
          when Variable_Kind_Type =>
             Tok : Token;
       end case;
