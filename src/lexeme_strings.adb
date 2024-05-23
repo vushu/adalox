@@ -1,4 +1,3 @@
-with Ada.Text_IO; use Ada.Text_IO;
 package body Lexeme_Strings is
 
    function "=" (Left : Lexeme_String; Right : String) return Boolean is

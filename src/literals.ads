@@ -1,5 +1,4 @@
 with Lexeme_Strings; use Lexeme_Strings;
-with Ada.Text_IO;    use Ada.Text_IO;
 
 package Literals is
 
