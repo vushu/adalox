@@ -5,8 +5,6 @@ package body Scanners_Suites is
       Ret : constant Access_Test_Suite := new Test_Suite;
    begin
       Ret.Add_Test (Test_Case_Access'(new Scanners.Test.Test));
-      --  Ret.Add_Test
-      --    (Test_Case_Access'(new Scanners.Test_Combined_Symbols.Test));
       return Ret;
    end Scanner_Suite;
 

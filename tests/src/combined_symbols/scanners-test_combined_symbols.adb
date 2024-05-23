@@ -16,7 +16,6 @@ package body Scanners.Test_Combined_Symbols is
       end loop;
 
    end Test_Double_Tokens;
-
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
