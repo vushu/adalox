@@ -5,7 +5,7 @@ package body Scanners.Test_Combined_Symbols is
       Input_String : constant String       := ">===!=<=";
       TokenList    : constant Token_Vector := Scan_Tokens (Input_String);
    begin
-      for I in 0 .. TokenList.Last_Index loop
+      for I in 0 .. TokenList.Last_Index - 1 loop
          declare
             T : constant Token           := TokenList (I);
             C : constant String (1 .. 2) :=

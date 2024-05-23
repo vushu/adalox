@@ -57,6 +57,14 @@ package body Scanners is
          return Source (Current);
       end Peek;
 
+      function Peek_Next return Character is
+      begin
+         if Current + 1 >= Source'Length then
+            return NUL;
+         end if;
+         return Source (Current + 1);
+      end Peek_Next;
+
       function Advance return Character is
          C : Character;
       begin
@@ -94,9 +102,41 @@ package body Scanners is
 
          --  String_Var := (String_Val => Lexeme);
 
-         Add_Token (TOK_STRING, String_Var);
+         Add_Token (String_Token, String_Var);
 
       end Handle_String;
+
+      function Is_Digit (C : Character) return Boolean is
+      begin
+         return C in '0' .. '9';
+      end Is_Digit;
+
+      function Is_Alpha (C : Character) return Boolean is
+      begin
+         return C in 'a' .. 'z' or else C in 'A' .. 'Z' or else C = '_';
+      end Is_Alpha;
+
+      function Is_Alpha_Numeric (C : Character) return Boolean is
+      begin
+         return Is_Alpha (C) or else Is_Digit (C);
+      end Is_Alpha_Numeric;
+
+      procedure Handle_Number is
+         Digit : Float;
+      begin
+         while Is_Digit (Peek) loop
+            Skip;
+         end loop;
+         if Peek = '.' and then Is_Digit (Peek_Next) then
+            Skip;
+            while Is_Digit (Peek) loop
+               Skip;
+            end loop;
+         end if;
+         Add_Token
+           (Number_Token,
+            Literal'(Float_Type, Float'Value (Source (Current .. Start))));
+      end Handle_Number;
 
       procedure Scan_Token is
          C : Character;
@@ -104,34 +144,37 @@ package body Scanners is
          C := Advance;
          case C is
             when '(' =>
-               Add_Token (TOK_LEFT_PAREN);
+               Add_Token (Left_Paren_Token);
             when ')' =>
-               Add_Token (TOK_RIGHT_PAREN);
+               Add_Token (Right_Paren_Token);
             when '{' =>
-               Add_Token (TOK_LEFT_BRACE);
+               Add_Token (Left_Brace_Token);
             when '}' =>
-               Add_Token (TOK_RIGHT_BRACE);
+               Add_Token (Right_Brace_Token);
             when ',' =>
-               Add_Token (TOK_COMMA);
+               Add_Token (Comma_Token);
             when '.' =>
-               Add_Token (TOK_DOT);
+               Add_Token (Dot_Token);
             when '-' =>
-               Add_Token (TOK_MINUS);
+               Add_Token (Minus_Token);
             when '+' =>
-               Add_Token (TOK_PLUS);
+               Add_Token (Plus_Token);
             when ';' =>
-               Add_Token (TOK_SEMICOLON);
+               Add_Token (Semicolon_Token);
             when '*' =>
-               Add_Token (TOK_STAR);
+               Add_Token (Star_Token);
             when '!' =>
-               Add_Token (if Match ('=') then TOK_BANG_EQUAL else TOK_BANG);
+               Add_Token
+                 (if Match ('=') then Bang_Equal_Token else Bang_Token);
             when '=' =>
-               Add_Token (if Match ('=') then TOK_EQUAL_EQUAL else TOK_EQUAL);
+               Add_Token
+                 (if Match ('=') then Equal_Equal_Token else Equal_Token);
             when '<' =>
-               Add_Token (if Match ('=') then TOK_LESS_EQUAL else TOK_LESS);
+               Add_Token
+                 (if Match ('=') then Less_Equal_Token else Less_Token);
             when '>' =>
                Add_Token
-                 (if Match ('=') then TOK_GREATER_EQUAL else TOK_GREATER);
+                 (if Match ('=') then Greater_Equal_Token else Greater_Token);
             when '/' =>
                if Match ('/') then
                   while Peek /= LF and then not Is_At_End loop
@@ -139,7 +182,7 @@ package body Scanners is
                      Skip;
                   end loop;
                else
-                  Add_Token (TOK_SLASH);
+                  Add_Token (Slash_Token);
                end if;
             when ' ' | CR | HT =>
                null;
@@ -150,6 +193,13 @@ package body Scanners is
             when '"' =>
                Handle_String;
             when others =>
+               if Is_Digit (C) then
+                  Handle_Number;
+
+                  --  elsif Is_Alpha_Numeric (C) then
+
+               end if;
+
                Put_Line ("Unknown character: " & Character'Image (C));
 
          end case;
@@ -163,6 +213,8 @@ package body Scanners is
          Start := Current;
          Scan_Token;
       end loop;
+
+      Tokens.Append (Create_Token (End_Of_File_Token, "", (Kind => Nothing)));
       return Tokens;
    end Scan_Tokens;
 

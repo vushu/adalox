@@ -5,13 +5,13 @@ with Literals;       use Literals;
 package Tokens is
 
    type Token_Kind is
-     (TOK_LEFT_PAREN, TOK_RIGHT_PAREN, TOK_LEFT_BRACE, TOK_RIGHT_BRACE,
-      TOK_COMMA, TOK_DOT, TOK_MINUS, TOK_PLUS, TOK_SEMICOLON, TOK_SLASH,
-      TOK_STAR, TOK_BANG, TOK_BANG_EQUAL, TOK_EQUAL, TOK_EQUAL_EQUAL,
-      TOK_GREATER, TOK_GREATER_EQUAL, TOK_LESS, TOK_LESS_EQUAL, TOK_IDENTIFIER,
-      TOK_STRING, TOK_NUMBER, TOK_AND, TOK_OR, TOK_CLASS, TOK_ELSE, TOK_FALSE,
-      TOK_FUN, TOK_FOR, TOK_IF, TOK_NIL, TOK_PRINT, TOK_RETURN, TOK_SUPER,
-      TOK_THIS, TOK_TRUE, TOK_VAR, TOK_WHILE, TOK_EOF);
+     (Left_Paren_Token, Right_Paren_Token, Left_Brace_Token, Right_Brace_Token,
+      Comma_Token, Dot_Token, Minus_Token, Plus_Token, Semicolon_Token, Slash_Token,
+      Star_Token, Bang_Token, Bang_Equal_Token, Equal_Token, Equal_Equal_Token,
+      Greater_Token, Greater_Equal_Token, Less_Token, Less_Equal_Token, Identifier_Token,
+      String_Token, Number_Token, And_Token, Or_Token, Class_Token, Else_Token, False_Token,
+      Fun_Token, For_Token, If_Token, Nil_Token, Print_Token, Return_Token, Super_Token,
+      This_Token, True_Token, Var_Token, While_Token, End_Of_File_Token);
 
    type Token is record
       Kind          : Token_Kind;
