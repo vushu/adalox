@@ -2,16 +2,15 @@ with AUnit.Assertions; use AUnit.Assertions;
 with Ada.Text_IO;      use Ada.Text_IO;
 with AST;              use AST;
 with Tokens;           use Tokens;
-with Lexeme_Strings;   use Lexeme_Strings;
 with Literals;         use Literals;
 package body Parser_Test is
 
    procedure Can_Create_Expr is
-      Tok          : Token       :=
+      Tok          : constant Token       :=
         Create_Token (Minus_Token, "-", Literal'(Kind => Nothing));
-      Lit          : Literal     := Literal'(Int_Type, 1);
-      Literal_Expr : Expr_Access := new Expr'(Literal_Kind_Type, Lit);
-      Unary_Expr   : Expr        := Expr'(Unary_Kind_Type, Literal_Expr, Tok);
+      Literal_Expr : constant Expr_Access :=
+        new Expr'(Literal_Kind_Type, (Int_Type, 1));
+      Unary_Expr : constant Expr := Expr'(Unary_Kind_Type, Literal_Expr, Tok);
    begin
       Assert (Unary_Expr.Unary_Right.Value.Int_Val = 1, "Should be equal.");
    end Can_Create_Expr;
@@ -30,6 +29,7 @@ package body Parser_Test is
       pragma Unreferenced (T);
    begin
       Can_Create_Expr;
+      Should_Parse;
    end Run_Test;
 
 end Parser_Test;

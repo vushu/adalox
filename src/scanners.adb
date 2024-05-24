@@ -121,6 +121,12 @@ package body Scanners is
          return Is_Alpha (C) or else Is_Digit (C);
       end Is_Alpha_Numeric;
 
+      procedure Handle_Identifier is
+      begin
+         Put_Line ("Item : String");
+      end Handle_Identifier;
+
+
       procedure Handle_Number is
          Digit : Float;
       begin
@@ -195,8 +201,12 @@ package body Scanners is
             when others =>
                if Is_Digit (C) then
                   Handle_Number;
+               elsif Is_Alpha_Numeric (C) then
+                  Put_Line ("asdfasf");
+                  
 
-                  --  elsif Is_Alpha_Numeric (C) then
+
+               --  elsif Is_Alpha_Numeric (C) then
 
                end if;
 
