@@ -5,17 +5,37 @@ with Lexeme_Strings; use Lexeme_Strings;
 package body Scanners is
    function Scan_Tokens (Src : String) return Token_Vector is
       ------- STATE
-      Start       : Natural              := 0;
-      Source      : String (1 .. 10_240) := (others => ' ');
-      Tokens      : Token_Vector;
-      Current     : Natural              := 1;
-      Line        : Natural;
-      Source_Size : Positive;
+      Start         : Natural              := 0;
+      Source        : String (1 .. 10_240) := (others => ' ');
+      Tokens        : Token_Vector;
+      Current       : Natural              := 1;
+      Line          : Natural;
+      Source_Size   : Positive;
+      Keywords_List : Keywords.Map;
+      LF            : constant Character   := Ada.Characters.Latin_1.LF;
+      NUL           : constant Character   := Ada.Characters.Latin_1.NUL;
+      CR            : constant Character   := Ada.Characters.Latin_1.CR;
+      HT            : constant Character   := Ada.Characters.Latin_1.HT;
 
-      LF  : constant Character := Ada.Characters.Latin_1.LF;
-      NUL : constant Character := Ada.Characters.Latin_1.NUL;
-      CR  : constant Character := Ada.Characters.Latin_1.CR;
-      HT  : constant Character := Ada.Characters.Latin_1.HT;
+      procedure Create_Keywords is
+      begin
+         Keywords_List.Include (Make_Lexeme_String ("and"), And_Token);
+         Keywords_List.Include (Make_Lexeme_String ("class"), Class_Token);
+         Keywords_List.Include (Make_Lexeme_String ("else"), Else_Token);
+         Keywords_List.Include (Make_Lexeme_String ("false"), False_Token);
+         Keywords_List.Include (Make_Lexeme_String ("for"), For_Token);
+         Keywords_List.Include (Make_Lexeme_String ("fun"), Fun_Token);
+         Keywords_List.Include (Make_Lexeme_String ("if"), If_Token);
+         Keywords_List.Include (Make_Lexeme_String ("nil"), Nil_Token);
+         Keywords_List.Include (Make_Lexeme_String ("or"), Or_Token);
+         Keywords_List.Include (Make_Lexeme_String ("print"), Print_Token);
+         Keywords_List.Include (Make_Lexeme_String ("return"), Return_Token);
+         Keywords_List.Include (Make_Lexeme_String ("super"), Super_Token);
+         Keywords_List.Include (Make_Lexeme_String ("this"), This_Token);
+         Keywords_List.Include (Make_Lexeme_String ("true"), True_Token);
+         Keywords_List.Include (Make_Lexeme_String ("var"), Var_Token);
+         Keywords_List.Include (Make_Lexeme_String ("while"), While_Token);
+      end Create_Keywords;
 
       procedure Add_Token (TK : Token_Kind; L : Literal) is
          T      : Token;
@@ -122,10 +142,24 @@ package body Scanners is
       end Is_Alpha_Numeric;
 
       procedure Handle_Identifier is
+         Tok_Kind : Token_Kind := Identifier_Token;
       begin
-         Put_Line ("Item : String");
-      end Handle_Identifier;
+         while Is_Alpha_Numeric (Peek) loop
+            Skip;
+         end loop;
+         declare
+            Text   : constant String := Source (Start .. (Current - Start));
+            Cursor : Keywords.Cursor :=
+              Keywords_List.Find (Make_Lexeme_String (Text));
+         begin
+            if Keywords.Has_Element (Cursor) then
+               Tok_Kind := Keywords.Element (Cursor);
+            end if;
 
+            Add_Token (Tok_Kind);
+         end;
+
+      end Handle_Identifier;
 
       procedure Handle_Number is
          Digit : Float;
@@ -202,21 +236,17 @@ package body Scanners is
                if Is_Digit (C) then
                   Handle_Number;
                elsif Is_Alpha_Numeric (C) then
-                  Put_Line ("asdfasf");
-                  
-
-
-               --  elsif Is_Alpha_Numeric (C) then
-
+                  Handle_Identifier;
+               else
+                  Put_Line ("Unknown character: " & Character'Image (C));
                end if;
-
-               Put_Line ("Unknown character: " & Character'Image (C));
 
          end case;
 
       end Scan_Token;
 
    begin
+      Create_Keywords;
       Source_Size                    := Src'Last;
       Source (Src'First .. Src'Last) := Src;
       while not Is_At_End loop

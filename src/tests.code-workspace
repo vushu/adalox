@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"path": "../tests"
+		},
+		{
+			"name": "containers",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/containers"
+		},
+		{
+			"name": "framework",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/framework"
+		},
+		{
+			"name": "calendar",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/framework/calendar"
+		},
+		{
+			"name": "fileio",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/framework/fileio"
+		},
+		{
+			"name": "fullexception",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/framework/fullexception"
+		},
+		{
+			"name": "nativememory",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/framework/nativememory"
+		},
+		{
+			"name": "reporters",
+			"path": "../../../../.local/share/alire/builds/aunit_24.0.0_67fdc2b6/249f072e831351e3fbbc16a779229b8e7ee6998db95dac4741d06bb774e2efe1/include/aunit/reporters"
+		},
+		{
+			"name": "config",
+			"path": "../config"
+		},
+		{
+			"name": "src",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

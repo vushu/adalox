@@ -1,4 +1,5 @@
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO;    use Ada.Text_IO;
+with Lexeme_Strings; use Lexeme_Strings;
 package body Tokens is
    function Create_Token
      (TK : Token_Kind; S : String; L : Literal) return Token
@@ -21,4 +22,11 @@ package body Tokens is
    begin
       Put_Line ("Lexeme:" & To_String (T.Lexeme));
    end Print_Token;
+
+   function Lexeme_String_Hash
+     (LS : Lexeme_String) return Ada.Containers.Hash_Type
+   is
+   begin
+      return Ada.Strings.Hash (To_String (LS));
+   end Lexeme_String_Hash;
 end Tokens;
