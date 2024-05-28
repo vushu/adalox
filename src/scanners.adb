@@ -88,7 +88,6 @@ package body Scanners is
       function Advance return Character is
          C : Character;
       begin
-         --  Put_Line ("CURRENT: " & Integer'Image (Current));
          C       := Source (Current);
          Current := Current + 1;
          return C;

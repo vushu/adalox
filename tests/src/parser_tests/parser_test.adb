@@ -17,7 +17,7 @@ package body Parser_Test is
 
    procedure Should_Parse is
    begin
-      Put_Line ("Item : String");
+      Put_Line ("Implement this later");
    end Should_Parse;
 
    overriding function Name (T : Test) return AUnit.Message_String is

@@ -20,7 +20,8 @@ package body Tokens is
 
    procedure Print_Token (T : Token) is
    begin
-      Put_Line ("Lexeme:" & To_String (T.Lexeme));
+      Put_Line
+        ("Lexeme: " & To_String (T.Lexeme) & " | Kind: " & T.Kind'Image);
    end Print_Token;
 
    function Lexeme_String_Hash
