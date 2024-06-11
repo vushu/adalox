@@ -1,6 +1,6 @@
 with AUnit.Assertions; use AUnit.Assertions;
 with Lexeme_Strings;   use Lexeme_Strings;
-with Ada.Text_IO;      use Ada.Text_IO;
+--  with Ada.Text_IO;      use Ada.Text_IO;
 package body Scanners.Test is
 
    overriding function Name (T : Test) return AUnit.Message_String is
@@ -38,7 +38,7 @@ package body Scanners.Test is
       Tab          : constant Character    := Character'Val (9);
       Input_String : constant String       := "" & Tab;
       TokenList    : constant Token_Vector := Scan_Tokens (Input_String);
-      N_Elements   : Integer               := Integer (TokenList.Length);
+      N_Elements   : constant Integer      := Integer (TokenList.Length);
    begin
 
       Assert (N_Elements = 1, "Should only have 1 token");

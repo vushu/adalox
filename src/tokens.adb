@@ -13,6 +13,12 @@ package body Tokens is
       return T;
    end Create_Token;
 
+   function Set_Line (T : in out Token; Line : Positive) return Token is
+   begin
+      T.Line := Line;
+      return T;
+   end Set_Line;
+
    procedure Print_Lexeme (T : Token) is
    begin
       Put_Line (To_String (T.Lexeme));
@@ -21,7 +27,8 @@ package body Tokens is
    procedure Print_Token (T : Token) is
    begin
       Put_Line
-        ("Lexeme: " & To_String (T.Lexeme) & " | Kind: " & T.Kind'Image);
+        ("Lexeme: " & To_String (T.Lexeme) & " | Kind: " & T.Kind'Image &
+         " Line: " & T.Line'Image);
    end Print_Token;
 
    function Lexeme_String_Hash
