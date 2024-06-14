@@ -17,13 +17,17 @@ package body Parser_Test is
    end Can_Create_Expr;
 
    procedure Should_Parse is
-      Tokens : Token_Vector;
-      Tok    : constant Token :=
+      Tokens     : Token_Vector;
+      Tok        : constant Token :=
         Create_Token (Minus_Token, "-", Literal'(Kind => Nothing));
+      Tok_number : constant Token :=
+        Create_Token (Number_Token, "1", Literal'(Float_Type, 1.0));
 
-      Res : Expr := Expr'(Literal_Kind_Type, (Kind => Nothing));
+      Res : Expr_Vector;
    begin
       Tokens.Append (Tok);
+      Tokens.Append (Tok_number);
+      Tokens.Append (Create_EOF_Token);
       Res := Parse (Tokens);
    end Should_Parse;
 

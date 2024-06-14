@@ -16,7 +16,7 @@ package Tokens is
       For_Token, If_Token, Nil_Token, Print_Token, Return_Token, Super_Token,
       This_Token, True_Token, Var_Token, While_Token, End_Of_File_Token);
 
-   type Token is record
+   type Token is tagged record
       Kind          : Token_Kind;
       Lexeme        : Lexeme_String;
       Literal_Value : Literal;
@@ -27,6 +27,8 @@ package Tokens is
    procedure Print_Token (T : Token);
    function Create_Token
      (TK : Token_Kind; S : String; L : Literal) return Token;
+
+   function Create_EOF_Token return Token;
 
    package Token_list is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Token);

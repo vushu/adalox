@@ -13,6 +13,13 @@ package body Tokens is
       return T;
    end Create_Token;
 
+   function Create_EOF_Token return Token is
+   begin
+      return
+        Create_Token
+          (TK => End_Of_File_Token, S => "", L => (Kind => Nothing));
+   end Create_EOF_Token;
+
    function Set_Line (T : in out Token; Line : Positive) return Token is
    begin
       T.Line := Line;
