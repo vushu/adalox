@@ -4,6 +4,7 @@ with AST;              use AST;
 with Tokens;           use Tokens;
 with Literals;         use Literals;
 with Parsers;          use Parsers;
+with Lexeme_Strings;   use Lexeme_Strings;
 package body Parser_Test is
 
    procedure Can_Create_Expr is
@@ -17,16 +18,20 @@ package body Parser_Test is
    end Can_Create_Expr;
 
    procedure Should_Parse is
-      Tokens     : Token_Vector;
-      Tok        : constant Token :=
+      Tokens        : Token_Vector;
+      Tok_Minus           : constant Token :=
         Create_Token (Minus_Token, "-", Literal'(Kind => Nothing));
-      Tok_number : constant Token :=
+      Tok_Number    : constant Token :=
         Create_Token (Number_Token, "1", Literal'(Float_Type, 1.0));
+      Tok_Semicolon : constant Token :=
+        Create_Token
+          (Semicolon_Token, ";", (String_Type, Make_Lexeme_String (";")));
 
-      Res : Expr_Vector;
+      Res : Stmt_Vector;
    begin
-      Tokens.Append (Tok);
-      Tokens.Append (Tok_number);
+      Tokens.Append (Tok_Minus);
+      Tokens.Append (Tok_Number);
+      Tokens.Append (Tok_Semicolon);
       Tokens.Append (Create_EOF_Token);
       Res := Parse (Tokens);
    end Should_Parse;

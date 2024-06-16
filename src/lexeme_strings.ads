@@ -3,7 +3,7 @@ package Lexeme_Strings with
 is
    Max : constant Integer := 255;
    type Length_T is new Integer range 0 .. Max;
-   type Lexeme_String is record
+   type Lexeme_String is tagged record
       Data   : String (1 .. Max);
       Length : Length_T;
    end record;
