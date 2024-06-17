@@ -1,7 +1,6 @@
 with Lexeme_Strings; use Lexeme_Strings;
 
 package Literals is
-
    type Literal_Kind is
      (Float_Type, Int_Type, Bool_Type, String_Type, Nothing);
 
@@ -19,5 +18,4 @@ package Literals is
             null;
       end case;
    end record;
-
 end Literals;

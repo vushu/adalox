@@ -172,13 +172,13 @@ package body Parsers is
             end Comparison;
 
             function Equality return Expr_Access is
-               E : Expr_Access := Term;
+               E : Expr_Access := Comparison;
             begin
                while Match ((Bang_Equal_Token, Equal_Equal_Token)) loop
                   E :=
                     new Expr'
-                      (Kind => Binary_Kind_Type, Left => E, Right => Term,
-                       Op   => Previous);
+                      (Kind  => Binary_Kind_Type, Left => E,
+                       Right => Comparison, Op => Previous);
                end loop;
                return E;
             end Equality;

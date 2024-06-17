@@ -6,7 +6,7 @@ package body Error_Reports is
       Had_Error := True;
    end Report;
 
-   procedure Error (T : in Token; Message : String) is
+   procedure Error (T : Token; Message : String) is
    begin
       if T.Kind = End_Of_File_Token then
          Report (T.Line, " at end", Message);
