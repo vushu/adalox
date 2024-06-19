@@ -46,7 +46,7 @@ package body Interpreters is
          when Grouping_Kind_Type =>
             return Evaluate_Expr (E.Expression);
          when Logical_Kind_Type =>
-            return (Kind => Nothing);
+            return Evaluate_Logical_Expr (E);
          when Binary_Kind_Type =>
             return Evaluate_Binary_Expr (E);
          when Literal_Kind_Type =>
@@ -56,9 +56,24 @@ package body Interpreters is
       end case;
    end Evaluate_Expr;
 
+   function Evaluate_Logical_Expr (E : Expr_Access) return Literal is
+      Left : constant Literal := Evaluate_Expr (E.Left);
+   begin
+      if E.Op.Kind = Or_Token then
+         if Is_Truthy (Left) then
+            return Left;
+         else
+            if not Is_Truthy (Left) then
+               return Left;
+            end if;
+         end if;
+      end if;
+      return Evaluate_Expr (E.Right);
+   end Evaluate_Logical_Expr;
+
    function Evaluate_Binary_Expr (E : Expr_Access) return Literal is
-      Left  : Literal := Evaluate_Expr (E.Left);
-      Right : Literal := Evaluate_Expr (E.Right);
+      Left  : constant Literal := Evaluate_Expr (E.Left);
+      Right : constant Literal := Evaluate_Expr (E.Right);
    begin
       case E.Op.Kind is
          when Minus_Token =>

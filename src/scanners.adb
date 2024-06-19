@@ -147,10 +147,11 @@ package body Scanners is
             Skip;
          end loop;
          declare
-            Text   : constant String := Source (Start .. (Current - Start));
+            Text   : constant String := Source (Start .. Current - 1);
             Cursor : Keywords.Cursor :=
               Keywords_List.Find (Make_Lexeme_String (Text));
          begin
+            Put_Line ("Text to find " & Text);
             if Keywords.Has_Element (Cursor) then
                Tok_Kind := Keywords.Element (Cursor);
             end if;

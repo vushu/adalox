@@ -8,5 +8,4 @@ package body Interpreter_Suites is
       Ret.Add_Test (Test_Case_Access'(new Interpreter_Test.Test));
       return Ret;
    end Suite;
-
 end Interpreter_Suites;

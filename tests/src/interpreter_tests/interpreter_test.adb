@@ -7,9 +7,17 @@ with AST;          use AST;
 with Literals;     use Literals;
 package body Interpreter_Test is
 
+   procedure Print_Tokens (Tokens : Token_Vector) is
+   begin
+      for T of Tokens loop
+         T.Print_Token;
+      end loop;
+
+   end Print_Tokens;
+
    procedure Test_Interpreter is
       --  Input_String : constant String := "+-*/.{-";
-      S      : constant String       := "(2+2)*2 / 2 == 4;";
+      S      : constant String       := "(2+2)*2 / 2 == 4 and 1 != 0;";
       Tokens : constant Token_Vector := Scan_Tokens (S);
       Stmts  : constant Stmt_Vector  := Parse (Tokens);
    begin

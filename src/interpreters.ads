@@ -11,6 +11,7 @@ private
      (T : Tokens.Token; Left : Literal; Right : Literal);
    function Evaluate_Expr (E : Expr_Access) return Literal;
    function Evaluate_Binary_Expr (E : Expr_Access) return Literal;
+   function Evaluate_Logical_Expr (E : Expr_Access) return Literal;
    function Evaluate_Unary_Expr (E : Expr_Access) return Literal;
    function Evaluate_Grouping_Expr (E : Expr_Access) return Literal;
 end Interpreters;
