@@ -67,8 +67,7 @@ package body Parsers is
             return Advance;
          end if;
 
-         Put_Line ("Error expected: " & M);
-         raise Parser_Error;
+         raise Parser_Error with "Error expected: " & M;
       end Consume;
 
       procedure Consume_Skip (T : Token_Kind; M : String) is
@@ -77,8 +76,7 @@ package body Parsers is
             Skip;
             return;
          end if;
-         Put_Line ("Error expected: " & M);
-         raise Parser_Error;
+         raise Parser_Error with "Error expected: " & M;
       end Consume_Skip;
 
       procedure Synchronize is
@@ -114,20 +112,28 @@ package body Parsers is
                elsif Match ((1 => Identifier_Token)) then
                   return new Expr'(Variable_Kind_Type, (Previous));
                elsif Match ((1 => Left_Paren_Token)) then
-                  Consume_Skip
-                    (Right_Paren_Token, "expected ) after expression.");
-                  return new Expr'(Grouping_Kind_Type, (Expression));
+                  declare
+                     E : constant Expr_Access := Expression;
+                  begin
+                     Consume_Skip
+                       (Right_Paren_Token, "expected ) after expression.");
+                     return new Expr'(Grouping_Kind_Type, E);
+                  end;
                end if;
 
                Error_Reports.Error (Peek, "Expect expression.");
                raise Parser_Error;
-
             end Primary;
 
             function Unary return Expr_Access is
             begin
                if Match ((Bang_Token, Minus_Token)) then
-                  return new Expr'(Unary_Kind_Type, Unary, Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Unary;
+                  begin
+                     return new Expr'(Unary_Kind_Type, Right, Op);
+                  end;
                end if;
                return Primary;
             end Unary;
@@ -136,10 +142,16 @@ package body Parsers is
                E : Expr_Access := Unary;
             begin
                while Match ((Slash_Token, Star_Token)) loop
-                  E :=
-                    new Expr'
-                      (Kind => Binary_Kind_Type, Left => E, Right => Unary,
-                       Op   => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Unary;
+                  begin
+
+                     E :=
+                       new Expr'
+                         (Kind => Binary_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+                  end;
                end loop;
                return E;
             end Factor;
@@ -148,10 +160,16 @@ package body Parsers is
                E : Expr_Access := Factor;
             begin
                while Match ((Minus_Token, Plus_Token)) loop
-                  E :=
-                    new Expr'
-                      (Kind => Binary_Kind_Type, Left => E, Right => Factor,
-                       Op   => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Factor;
+                  begin
+
+                     E :=
+                       new Expr'
+                         (Kind => Binary_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+                  end;
                end loop;
                return E;
             end Term;
@@ -163,10 +181,15 @@ package body Parsers is
                    ((Greater_Token, Greater_Equal_Token, Less_Token,
                      Less_Equal_Token))
                loop
-                  E :=
-                    new Expr'
-                      (Kind => Binary_Kind_Type, Left => E, Right => Factor,
-                       Op   => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Factor;
+                  begin
+                     E :=
+                       new Expr'
+                         (Kind => Binary_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+                  end;
                end loop;
                return E;
             end Comparison;
@@ -175,10 +198,16 @@ package body Parsers is
                E : Expr_Access := Comparison;
             begin
                while Match ((Bang_Equal_Token, Equal_Equal_Token)) loop
-                  E :=
-                    new Expr'
-                      (Kind  => Binary_Kind_Type, Left => E,
-                       Right => Comparison, Op => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Comparison;
+                  begin
+                     E :=
+                       new Expr'
+                         (Kind => Binary_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+
+                  end;
                end loop;
                return E;
             end Equality;
@@ -187,10 +216,15 @@ package body Parsers is
                E : Expr_Access := Equality;
             begin
                while Match ((1 => And_Token)) loop
-                  E :=
-                    new Expr'
-                      (Kind => Logical_Kind_Type, Left => E, Right => Equality,
-                       Op   => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := Equality;
+                  begin
+                     E :=
+                       new Expr'
+                         (Kind => Logical_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+                  end;
                end loop;
                return E;
             end And_Expression;
@@ -199,10 +233,15 @@ package body Parsers is
                E : Expr_Access := And_Expression;
             begin
                while Match ((1 => Or_Token)) loop
-                  E :=
-                    new Expr'
-                      (Kind  => Logical_Kind_Type, Left => E,
-                       Right => And_Expression, Op => Previous);
+                  declare
+                     Op    : constant Token       := Previous;
+                     Right : constant Expr_Access := And_Expression;
+                  begin
+                     E :=
+                       new Expr'
+                         (Kind => Logical_Kind_Type, Left => E, Right => Right,
+                          Op   => Op);
+                  end;
                end loop;
                return E;
             end Or_Expression;
@@ -212,7 +251,7 @@ package body Parsers is
          end Expression;
 
          function ExpressionStatement return Stmt_Access is
-            E : Expr_Access := Expression;
+            E : constant Expr_Access := Expression;
          begin
             Consume_Skip (Semicolon_Token, "Expected ';' after expression.");
             return new Stmt'(Expression_Kind_Type, E);

@@ -17,16 +17,16 @@ package body Parser_Test is
       Assert (Unary_Expr.Unary_Right.Value.Int_Val = 1, "Should be equal.");
    end Can_Create_Expr;
 
-   procedure Testing_Slice is 
-      S : String := "1234.0";
-      L : String := S(S'Last - 1 .. S'Last);
-      HEAD : String := S(1 .. S'Last - 2);
-      B : Boolean := (L = ".0");
+   procedure Testing_Slice is
+      S    : constant String  := "1234.0";
+      L    : constant String  := S (S'Last - 1 .. S'Last);
+      HEAD : constant String  := S (1 .. S'Last - 2);
+      B    : constant Boolean := (L = ".0");
    begin
       Put_Line ("Slice: " & L);
       Put_Line ("Slice: " & B'Image);
       Put_Line ("HEAD: " & HEAD);
-      Assert( HEAD = "1234", "Should be equal");
+      Assert (HEAD = "1234", "Should be equal");
 
    end Testing_Slice;
 

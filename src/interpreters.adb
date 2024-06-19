@@ -11,34 +11,10 @@ package body Interpreters is
       for Statement of Statements loop
          Put_Line (Stringify (Evaluate_Expr (Statement.Expression)));
       end loop;
-   exception
-      when Runtime_Error =>
-         Put_Line ("Runtime Error occured!");
+      --  exception
+      --     when Runtime_Error =>
+      --        Put_Line ("Runtime Error occured!");
    end Interpret;
-
-   function Is_Truthy (L : Literal) return Boolean is
-   begin
-      case L.Kind is
-         when Nothing =>
-            return False;
-         when Bool_Type =>
-            return False;
-         when others =>
-            return True;
-      end case;
-   end Is_Truthy;
-
-   function Is_Equal (A : Literal; B : Literal) return Boolean is
-   begin
-      if A.Kind = Nothing and B.Kind = Nothing then
-         return True;
-      end if;
-
-      if A.Kind = Nothing then
-         return False;
-      end if;
-      return A = B;
-   end Is_Equal;
 
    procedure Check_Number_Operand (T : Tokens.Token; Operand : Literal) is
    begin
@@ -60,28 +36,6 @@ package body Interpreters is
       raise Runtime_Error with "Operands must be numbers";
    end Check_Number_Operands;
 
-   function Stringify (L : Literal) return String is
-   begin
-      if L.Kind = Nothing then
-         return "nil";
-      end if;
-
-      if L.Kind = Float_Type then
-         declare
-            Number_Text : String := L.String_Val.To_String;
-            Last_Text   : String :=
-              Number_Text ((Number_Text'Last - 1) .. Number_Text'Last);
-
-         begin
-            if Last_Text = ".0" then
-               Number_Text := Number_Text (1 .. Number_Text'Last - 2);
-            end if;
-            return Number_Text;
-         end;
-      end if;
-      return L.String_Val.To_String;
-   end Stringify;
-
    function Evaluate_Expr (E : Expr_Access) return Literal is
    begin
       case E.Kind is
@@ -90,7 +44,7 @@ package body Interpreters is
          when Variable_Kind_Type =>
             return (Kind => Nothing);
          when Grouping_Kind_Type =>
-            return (Kind => Nothing);
+            return Evaluate_Expr (E.Expression);
          when Logical_Kind_Type =>
             return (Kind => Nothing);
          when Binary_Kind_Type =>

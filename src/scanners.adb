@@ -174,7 +174,7 @@ package body Scanners is
          end if;
          Add_Token
            (Number_Token,
-            Literal'(Float_Type, Float'Value (Source (Current .. Start))));
+            Literal'(Float_Type, Float'Value (Source (Start .. Current - 1))));
       end Handle_Number;
 
       procedure Scan_Token is
