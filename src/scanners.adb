@@ -151,9 +151,9 @@ package body Scanners is
             Cursor : Keywords.Cursor :=
               Keywords_List.Find (Make_Lexeme_String (Text));
          begin
-            Put_Line ("Text to find " & Text);
             if Keywords.Has_Element (Cursor) then
                Tok_Kind := Keywords.Element (Cursor);
+               --  Put_Line ("Found " & Text);
             end if;
 
             Add_Token (Tok_Kind);

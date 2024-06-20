@@ -16,13 +16,26 @@ package body Interpreter_Test is
    end Print_Tokens;
 
    procedure Test_Interpreter is
-      --  Input_String : constant String := "+-*/.{-";
       S      : constant String       := "(2+2)*2 / 2 == 4 and 1 != 0;";
       Tokens : constant Token_Vector := Scan_Tokens (S);
       Stmts  : constant Stmt_Vector  := Parse (Tokens);
    begin
       Interpret (Stmts);
    end Test_Interpreter;
+
+   procedure Test_Interpreter_Or_Logic is
+      Tokens : constant Token_Vector := Scan_Tokens ("true or false;");
+      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+   begin
+      Interpret (Stmts);
+   end Test_Interpreter_Or_Logic;
+
+   procedure Test_Interpreter_And_Logic is
+      Tokens : constant Token_Vector := Scan_Tokens ("true and false;");
+      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+   begin
+      Interpret (Stmts);
+   end Test_Interpreter_And_Logic;
 
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
@@ -33,6 +46,8 @@ package body Interpreter_Test is
       pragma Unreferenced (T);
    begin
       Test_Interpreter;
+      Test_Interpreter_Or_Logic;
+      Test_Interpreter_And_Logic;
    end Run_Test;
 
 end Interpreter_Test;
