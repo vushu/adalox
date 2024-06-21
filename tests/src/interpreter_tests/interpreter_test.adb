@@ -37,6 +37,14 @@ package body Interpreter_Test is
       Interpret (Stmts);
    end Test_Interpreter_And_Logic;
 
+   procedure Test_Interpreter_Arithmetic is
+      Tokens : constant Token_Vector := Scan_Tokens ("2 * 5 + 4;");
+      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+   begin
+      Interpret (Stmts);
+   end Test_Interpreter_Arithmetic;
+
+
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
@@ -48,6 +56,7 @@ package body Interpreter_Test is
       Test_Interpreter;
       Test_Interpreter_Or_Logic;
       Test_Interpreter_And_Logic;
+      Test_Interpreter_Arithmetic;
    end Run_Test;
 
 end Interpreter_Test;
