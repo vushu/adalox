@@ -1,3 +1,4 @@
+with Ada.Float_Text_IO;
 package body Literals is
     function Stringify (L : Literal) return String is
     begin
@@ -15,6 +16,9 @@ package body Literals is
                     if Last_Text = ".0" then
                         Number_Text := Number_Text (1 .. Number_Text'Last - 2);
                     end if;
+                    Ada.Float_Text_IO.Put
+                       (To  => Number_Text, Item => Float'Value (Number_Text),
+                        Aft => 3, Exp => 0);
                     return Number_Text;
                 end;
             when Bool_Type =>

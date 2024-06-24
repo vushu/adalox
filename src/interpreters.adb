@@ -1,5 +1,6 @@
 with Error_Reports;
 with Ada.Text_IO;    use Ada.Text_IO;
+with Ada.Float_Text_IO;
 with AST;            use AST;
 with Tokens;         use Tokens;
 with Lexeme_Strings; use Lexeme_Strings;
@@ -87,8 +88,7 @@ package body Interpreters is
             return (Float_Type, Float_Val => Left.Float_Val * Right.Float_Val);
          when Plus_Token =>
             if Left.Kind = Float_Type and then Right.Kind = Float_Type then
-               return
-                 (Float_Type, Float_Val => Left.Float_Val + Right.Float_Val);
+               return Literal'(Float_Type, Left.Float_Val + Right.Float_Val);
             elsif Left.Kind = String_Type and then Right.Kind = String_Type
             then
                return
