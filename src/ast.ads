@@ -38,14 +38,14 @@ package AST is
    type Stmt_Kind is (
    --  Block_Kind_Type,
    --  Class_Kind_Type,
-   Expression_Kind_Type
-   --  Function_Stmt_Kind_Type,
-   --  If_Stmt_Kind_Type,
-   --  Print_Stmt_Kind_Type,
-   --  Return_Stmt_Kind_Type,
-   --  Var_Stmt_Kind_Type,
-   --  While_Stmt_Kind_Type
-   );
+   Expression_Kind_Type,
+                     --  Function_Stmt_Kind_Type,
+                     --  If_Stmt_Kind_Type,
+                     Print_Stmt_Kind_Type
+                     --  Return_Stmt_Kind_Type,
+                     --  Var_Stmt_Kind_Type,
+                     --  While_Stmt_Kind_Type
+                     );
 
    package Stmt_List is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Stmt_Access);
@@ -53,7 +53,7 @@ package AST is
 
    type Stmt (Kind : Stmt_Kind) is record
       case Kind is
-         when Expression_Kind_Type =>
+         when Expression_Kind_Type | Print_Stmt_Kind_Type =>
             Expression : Expr_Access;
       end case;
    end record;

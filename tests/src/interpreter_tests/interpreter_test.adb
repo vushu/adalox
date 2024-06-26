@@ -45,7 +45,7 @@ package body Interpreter_Test is
    end Test_Interpreter_Arithmetic;
 
    procedure Test_Interpreter_Plus is
-      Tokens : constant Token_Vector := Scan_Tokens ("5 + 5;");
+      Tokens : constant Token_Vector := Scan_Tokens ("print 5 + 5;");
       Stmts  : constant Stmt_Vector  := Parse (Tokens);
    begin
       Interpret (Stmts);

@@ -250,15 +250,27 @@ package body Parsers is
             return Or_Expression;
          end Expression;
 
-         function ExpressionStatement return Stmt_Access is
+         function Expression_Statement return Stmt_Access is
             E : constant Expr_Access := Expression;
          begin
             Consume_Skip (Semicolon_Token, "Expected ';' after expression.");
             return new Stmt'(Expression_Kind_Type, E);
-         end ExpressionStatement;
+         end Expression_Statement;
+
+         function Print_Statement return Stmt_Access is
+            Value : Expr_Access := Expression;
+         begin
+            Consume_Skip (Semicolon_Token, "Expected ';' after value.");
+            return new Stmt'(Print_Stmt_Kind_Type, Value);
+
+         end Print_Statement;
 
       begin
-         return ExpressionStatement;
+         if Match ((1 => Print_Token)) then
+            return Print_Statement;
+         end if;
+
+         return Expression_Statement;
 
       end Statement;
 
@@ -269,6 +281,11 @@ package body Parsers is
          Stmts.Append (Statement);
       end loop;
       return Stmts;
+   exception
+      when Parser_Error =>
+         Synchronize;
+         Put_Line ("Got Parser Error! Synchronizing");
+         return Stmts;
    end Parse;
 
 end Parsers;

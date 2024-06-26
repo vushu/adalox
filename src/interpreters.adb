@@ -10,7 +10,7 @@ package body Interpreters is
 
    begin
       for Statement of Statements loop
-         Put_Line (Stringify (Evaluate_Expr (Statement.Expression)));
+         Execute (Statement);
       end loop;
       --  exception
       --     when Runtime_Error =>
@@ -132,5 +132,27 @@ package body Interpreters is
    begin
       return Evaluate_Expr (E);
    end Evaluate_Grouping_Expr;
+
+   procedure Evaluate_Print_Stmt (S : Stmt_Access) is
+      Value : Literal := Evaluate_Expr (S.Expression);
+   begin
+      Put_Line (Stringify (Value));
+   end Evaluate_Print_Stmt;
+
+   procedure Evaluate_Expression_Stmt (S : Stmt_Access) is
+      Res : Literal;
+   begin
+      Res := Evaluate_Expr (S.Expression);
+   end Evaluate_Expression_Stmt;
+
+   procedure Execute (Stmt : Stmt_Access) is
+   begin
+      case Stmt.Kind is
+         when Expression_Kind_Type =>
+            Evaluate_Expression_Stmt (Stmt);
+         when Print_Stmt_Kind_Type =>
+            Evaluate_Print_Stmt (Stmt);
+      end case;
+   end Execute;
 
 end Interpreters;
