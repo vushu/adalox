@@ -56,6 +56,26 @@ package body Interpreter_Test is
       Interpret (Stmts);
    end Test_Interpreter_Plus;
 
+   procedure Test_Interpreter_Variable is
+      Tokens : constant Token_Vector :=
+        Scan_Tokens ("var a = 1; var b = 2; print a + b;");
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
+   begin
+      Interpret (Stmts);
+
+   end Test_Interpreter_Variable;
+
+   procedure Test_Interpreter_Assign is
+      Tokens : constant Token_Vector :=
+        Scan_Tokens ("var a = 1; print a = 2 + 1;");
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
+   begin
+      Interpret (Stmts);
+
+   end Test_Interpreter_Assign;
+
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
@@ -69,6 +89,8 @@ package body Interpreter_Test is
       Test_Interpreter_And_Logic;
       Test_Interpreter_Arithmetic;
       Test_Interpreter_Plus;
+      Test_Interpreter_Variable;
+      Test_Interpreter_Assign;
    end Run_Test;
 
 end Interpreter_Test;

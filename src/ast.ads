@@ -8,13 +8,16 @@ package AST is
    type Expr_Access is access Expr;
    type Expr_Kind is
      (Unary_Kind_Type, Binary_Kind_Type, Grouping_Kind_Type, Literal_Kind_Type,
-      Variable_Kind_Type, Logical_Kind_Type);
+      Variable_Kind_Type, Logical_Kind_Type, Assign_Kind_Type);
 
    type Expr (Kind : Expr_Kind) is record
       case Kind is
          when Unary_Kind_Type =>
             Unary_Right : Expr_Access;
             Unary_Op    : Token;
+         when Assign_Kind_Type =>
+            Assign_Name  : Token;
+            Assign_Value : Expr_Access;
          when Binary_Kind_Type | Logical_Kind_Type =>
             Left  : Expr_Access;
             Right : Expr_Access;
@@ -24,7 +27,7 @@ package AST is
          when Literal_Kind_Type =>
             Value : Literal;
          when Variable_Kind_Type =>
-            Tok : Token;
+            Variable_Name : Token;
       end case;
    end record;
 
@@ -43,9 +46,10 @@ package AST is
                      --  If_Stmt_Kind_Type,
                      Print_Stmt_Kind_Type,
                      --  Return_Stmt_Kind_Type,
-                     Var_Decl_Stmt_Kind_Type
-                     --  While_Stmt_Kind_Type
-                     );
+                     Var_Decl_Stmt_Kind_Type,
+      Block_Kind_Type
+      --  While_Stmt_Kind_Type
+      );
 
    package Stmt_List is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Stmt_Access);
@@ -58,6 +62,8 @@ package AST is
          when Var_Decl_Stmt_Kind_Type =>
             Name        : Token;
             Initializer : Expr_Access;
+         when Block_Kind_Type =>
+            Block_Statements : Stmt_Vector;
       end case;
    end record;
 end AST;

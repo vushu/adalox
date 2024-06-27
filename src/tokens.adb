@@ -37,11 +37,4 @@ package body Tokens is
         ("Lexeme: " & To_String (T.Lexeme) & " | Kind: " & T.Kind'Image &
          " Line: " & T.Line'Image);
    end Print_Token;
-
-   function Lexeme_String_Hash
-     (LS : Lexeme_String) return Ada.Containers.Hash_Type
-   is
-   begin
-      return Ada.Strings.Hash (To_String (LS));
-   end Lexeme_String_Hash;
 end Tokens;

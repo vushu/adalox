@@ -1,3 +1,4 @@
+with Ada.Strings.Hash;
 package body Lexeme_Strings is
 
    function "=" (Left : Lexeme_String; Right : String) return Boolean is
@@ -27,4 +28,12 @@ package body Lexeme_Strings is
    begin
       return Source.Data (1 .. Natural (Source.Length));
    end To_String;
+
+   function Lexeme_String_Hash
+     (LS : Lexeme_String) return Ada.Containers.Hash_Type
+   is
+   begin
+      return Ada.Strings.Hash (To_String (LS));
+   end Lexeme_String_Hash;
+
 end Lexeme_Strings;

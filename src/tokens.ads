@@ -1,8 +1,8 @@
 with Lexeme_Strings; use Lexeme_Strings;
 with Ada.Containers; use Ada.Containers;
 with Ada.Containers.Vectors;
-with Ada.Containers.Hashed_Maps;
 with Ada.Strings.Hash;
+with Ada.Containers.Hashed_Maps;
 with Literals;       use Literals;
 package Tokens is
 
@@ -33,9 +33,6 @@ package Tokens is
    package Token_list is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Token);
    subtype Token_Vector is Token_list.Vector;
-
-   function Lexeme_String_Hash
-     (LS : Lexeme_String) return Ada.Containers.Hash_Type;
 
    package Keywords is new Ada.Containers.Hashed_Maps
      (Key_Type => Lexeme_String, Element_Type => Token_Kind,

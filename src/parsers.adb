@@ -224,95 +224,122 @@ package body Parsers is
          return E;
       end Or_Expression;
 
+      function Assignment return Expr_Access is
+         E : Expr_Access := Or_Expression;
+      begin
+         if Self.Match ((1 => Equal_Token)) then
+            declare
+               Equals : Token       := Self.Previous;
+               Value  : Expr_Access := Assignment;
+            begin
+               if E.Kind = Variable_Kind_Type then
+                  return
+                    new Expr'
+                      (Kind        => Assign_Kind_Type,
+                       Assign_Name => E.Variable_Name, Assign_Value => Value);
+               end if;
+               Error_Reports.Error (Equals, "Invalid assignment target.");
+            end;
+         end if;
+         return E;
+      end Assignment;
+
    begin
-      return Or_Expression;
+      return Assignment;
    end Expression;
 
    function Parse (Self : in out Parser) return Stmt_Vector is
-
-      procedure Synchronize is
-      begin
-         Self.Skip;
-         if Self.Previous.Kind = Semicolon_Token then
-            return;
-         end if;
-         case Self.Peek.Kind is
-            when Class_Token | Fun_Token | Var_Token | For_Token | If_Token
-              | While_Token | Print_Token | Return_Token =>
-               return;
-            when others =>
-               Self.Skip;
-         end case;
-      end Synchronize;
-
-      function Statement return Stmt_Access is
-
-         function Expression_Statement return Stmt_Access is
-            E : constant Expr_Access := Self.Expression;
-         begin
-            Self.Consume_Skip
-              (Semicolon_Token, "Expected ';' after expression.");
-            return new Stmt'(Expression_Kind_Type, E);
-         end Expression_Statement;
-
-         function Print_Statement return Stmt_Access is
-            Value : Expr_Access := Self.Expression;
-         begin
-            Self.Consume_Skip (Semicolon_Token, "Expected ';' after value.");
-            return new Stmt'(Print_Stmt_Kind_Type, Value);
-
-         end Print_Statement;
-
-         function Var_Declaration return Stmt_Access is
-            Name        : Token :=
-              Self.Consume (Identifier_Token, "Expected variable name.");
-            Initializer : Expr_Access;
-         begin
-            if Self.Match ((1 => Equal_Token)) then
-               Initializer := Self.Expression;
-            end if;
-            Self.Consume_Skip
-              (Semicolon_Token, "Expected ';' after variable declaration.");
-            return
-              new Stmt'
-                (Kind        => Var_Decl_Stmt_Kind_Type, Name => Name,
-                 Initializer => Initializer);
-         end Var_Declaration;
-
-         function Declaration return Stmt_Access is
-         begin
-            if Self.Match ((1 => Var_Token)) then
-               return Var_Declaration;
-            end if;
-            return Statement;
-         exception
-            when Parser_Error =>
-               Synchronize;
-               return null;
-
-         end Declaration;
-
-      begin
-         if Self.Match ((1 => Print_Token)) then
-            return Print_Statement;
-         end if;
-
-         return Expression_Statement;
-
-      end Statement;
 
       Stmts : Stmt_Vector;
    begin
 
       while not Self.Is_At_End loop
-         Stmts.Append (Statement);
+         Stmts.Append (Self.Declaration);
       end loop;
       return Stmts;
    exception
       when Parser_Error =>
-         Synchronize;
+         Self.Synchronize;
          Put_Line ("Got Parser Error! Synchronizing");
          return Stmts;
    end Parse;
 
+   procedure Synchronize (Self : in out Parser) is
+   begin
+      Self.Skip;
+      if Self.Previous.Kind = Semicolon_Token then
+         return;
+      end if;
+      case Self.Peek.Kind is
+         when Class_Token | Fun_Token | Var_Token | For_Token | If_Token
+           | While_Token | Print_Token | Return_Token =>
+            return;
+         when others =>
+            Self.Skip;
+      end case;
+   end Synchronize;
+
+   function Declaration (Self : in out Parser) return Stmt_Access is
+   begin
+      if Self.Match ((1 => Var_Token)) then
+         return Self.Var_Declaration;
+      end if;
+      return Self.Statement;
+   exception
+      when Parser_Error =>
+         Self.Synchronize;
+         return null;
+   end Declaration;
+
+   function Var_Declaration (Self : in out Parser) return Stmt_Access is
+      Name        : Token :=
+        Self.Consume (Identifier_Token, "Expected variable name.");
+      Initializer : Expr_Access;
+   begin
+      if Self.Match ((1 => Equal_Token)) then
+         Initializer := Self.Expression;
+      end if;
+      Self.Consume_Skip
+        (Semicolon_Token, "Expected ';' after variable declaration.");
+      return
+        new Stmt'
+          (Kind        => Var_Decl_Stmt_Kind_Type, Name => Name,
+           Initializer => Initializer);
+   end Var_Declaration;
+
+   function Statement (Self : in out Parser) return Stmt_Access is
+
+      function Expression_Statement return Stmt_Access is
+         E : constant Expr_Access := Self.Expression;
+      begin
+         Self.Consume_Skip (Semicolon_Token, "Expected ';' after expression.");
+         return new Stmt'(Expression_Kind_Type, E);
+      end Expression_Statement;
+
+      function Print_Statement return Stmt_Access is
+         Value : Expr_Access := Self.Expression;
+      begin
+         Self.Consume_Skip (Semicolon_Token, "Expected ';' after value.");
+         return new Stmt'(Print_Stmt_Kind_Type, Value);
+
+      end Print_Statement;
+
+      function Block return Stmt_Vector is
+         Statements : Stmt_Vector;
+      begin
+         while Self.Check (Right_Brace_Token) and then not Self.Is_At_End loop
+            Statements.Append (Self.Declaration);
+         end loop;
+         Self.Consume_Skip (Right_Brace_Token, "Expected '}' after block.");
+         return Statements;
+      end Block;
+
+   begin
+      if Self.Match ((1 => Print_Token)) then
+         return Print_Statement;
+      end if;
+
+      return Expression_Statement;
+
+   end Statement;
 end Parsers;

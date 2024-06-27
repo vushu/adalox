@@ -1,3 +1,4 @@
+with Ada.Containers.Hashed_Maps;
 package Lexeme_Strings with
   SPARK_Mode
 is
@@ -12,6 +13,8 @@ is
    function "=" (Left : Lexeme_String; Right : String) return Boolean with
      Global => null;
 
---  private
+   function Lexeme_String_Hash
+     (LS : Lexeme_String) return Ada.Containers.Hash_Type;
+   --  private
    --  type Length_T is new Integer range 0 .. Max;
 end Lexeme_Strings;

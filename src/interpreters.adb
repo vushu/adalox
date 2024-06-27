@@ -7,8 +7,8 @@ with Lexeme_Strings; use Lexeme_Strings;
 package body Interpreters is
 
    procedure Interpret (Statements : AST.Stmt_Vector) is
-
    begin
+      Env := new Environment;
       for Statement of Statements loop
          Execute (Statement);
       end loop;
@@ -30,7 +30,7 @@ package body Interpreters is
      (T : Tokens.Token; Left : Literal; Right : Literal)
    is
    begin
-      if Left.Kind = Float_Type and Right.Kind = Float_Type then
+      if Left.Kind = Float_Type and then Right.Kind = Float_Type then
          return;
       end if;
 
@@ -43,7 +43,9 @@ package body Interpreters is
          when Unary_Kind_Type =>
             return Evaluate_Unary_Expr (E);
          when Variable_Kind_Type =>
-            return (Kind => Nothing);
+            return Evaluate_Variable_Expr (E);
+         when Assign_Kind_Type =>
+            return Evaluate_Assign_Expr (E);
          when Grouping_Kind_Type =>
             return Evaluate_Expr (E.Expression);
          when Logical_Kind_Type =>
@@ -133,6 +135,18 @@ package body Interpreters is
       return Evaluate_Expr (E);
    end Evaluate_Grouping_Expr;
 
+   function Evaluate_Variable_Expr (E : Expr_Access) return Literal is
+   begin
+      return Env.Get (E.Variable_Name);
+   end Evaluate_Variable_Expr;
+
+   function Evaluate_Assign_Expr (E : Expr_Access) return Literal is
+      Value : Literal := Evaluate_Expr (E.Assign_Value);
+   begin
+      Env.Assign (E.Assign_Name, Value);
+      return Value;
+   end Evaluate_Assign_Expr;
+
    procedure Evaluate_Print_Stmt (S : Stmt_Access) is
       Value : Literal := Evaluate_Expr (S.Expression);
    begin
@@ -146,9 +160,36 @@ package body Interpreters is
    end Evaluate_Expression_Stmt;
 
    procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access) is
+      Value : Literal := (Kind => Nothing);
+   begin
+      if S.Initializer /= null then
+         Value := Evaluate_Expr (S.Initializer);
+      end if;
+      Env.Define (S.Name.Lexeme, Value);
+   end Evaluate_Var_Decl_Stmt;
+
+   procedure Execute_Block (Statements : Stmt_Vector; E : Environment_Access)
+   is
+      P : Environment_Access := Env;
+   begin
+      Env := E;
+      for Stmt of Statements loop
+         Execute (Stmt);
+      end loop;
+   exception
+      when Error_Reports.Runtime_Error =>
+         Put_Line ("Execute_Block failed!");
+         Env := P;
+      when others                      =>
+         Put_Line ("Execute_Block failed for others!");
+         Env := P;
+
+   end Execute_Block;
+
+   procedure Evaluate_Block_Stmt (S : Stmt_Access) is
    begin
       null;
-   end Evaluate_Var_Decl_Stmt;
+   end Evaluate_Block_Stmt;
 
    procedure Execute (Stmt : Stmt_Access) is
    begin
@@ -159,6 +200,8 @@ package body Interpreters is
             Evaluate_Print_Stmt (Stmt);
          when Var_Decl_Stmt_Kind_Type =>
             Evaluate_Var_Decl_Stmt (Stmt);
+         when others =>
+            null;
       end case;
    end Execute;
 

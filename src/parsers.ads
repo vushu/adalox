@@ -11,6 +11,7 @@ package Parsers is
    end record;
    function Parse (Self : in out Parser) return AST.Stmt_Vector;
 
+private
    function Expression (Self : in out Parser) return AST.Expr_Access;
    function Match
      (Self : in out Parser; Types : Variadic_Token_Kinds) return Boolean;
@@ -23,4 +24,10 @@ package Parsers is
    procedure Consume_Skip (Self : in out Parser; T : Token_Kind; M : String);
    function Advance (Self : in out Parser) return Token;
    function Previous (Self : Parser) return Token;
+
+   procedure Synchronize (Self : in out Parser);
+   function Var_Declaration(Self : in out Parser) return AST.Stmt_Access;
+   function Declaration (Self : in out Parser) return AST.Stmt_Access;
+   function Statement (Self : in out Parser) return AST.Stmt_Access;
+
 end Parsers;

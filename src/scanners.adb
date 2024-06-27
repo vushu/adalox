@@ -153,7 +153,6 @@ package body Scanners is
          begin
             if Keywords.Has_Element (Cursor) then
                Tok_Kind := Keywords.Element (Cursor);
-               --  Put_Line ("Found " & Text);
             end if;
 
             Add_Token (Tok_Kind);
