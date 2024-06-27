@@ -145,6 +145,11 @@ package body Interpreters is
       Res := Evaluate_Expr (S.Expression);
    end Evaluate_Expression_Stmt;
 
+   procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access) is
+   begin
+      null;
+   end Evaluate_Var_Decl_Stmt;
+
    procedure Execute (Stmt : Stmt_Access) is
    begin
       case Stmt.Kind is
@@ -152,6 +157,8 @@ package body Interpreters is
             Evaluate_Expression_Stmt (Stmt);
          when Print_Stmt_Kind_Type =>
             Evaluate_Print_Stmt (Stmt);
+         when Var_Decl_Stmt_Kind_Type =>
+            Evaluate_Var_Decl_Stmt (Stmt);
       end case;
    end Execute;
 

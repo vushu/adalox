@@ -4,7 +4,6 @@ with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 package AST is
-
    type Expr;
    type Expr_Access is access Expr;
    type Expr_Kind is
@@ -35,15 +34,16 @@ package AST is
 
    type Stmt;
    type Stmt_Access is access Stmt;
-   type Stmt_Kind is (
+   type Stmt_Kind is
+     (
    --  Block_Kind_Type,
    --  Class_Kind_Type,
    Expression_Kind_Type,
                      --  Function_Stmt_Kind_Type,
                      --  If_Stmt_Kind_Type,
-                     Print_Stmt_Kind_Type
+                     Print_Stmt_Kind_Type,
                      --  Return_Stmt_Kind_Type,
-                     --  Var_Stmt_Kind_Type,
+                     Var_Decl_Stmt_Kind_Type
                      --  While_Stmt_Kind_Type
                      );
 
@@ -55,6 +55,9 @@ package AST is
       case Kind is
          when Expression_Kind_Type | Print_Stmt_Kind_Type =>
             Expression : Expr_Access;
+         when Var_Decl_Stmt_Kind_Type =>
+            Name        : Token;
+            Initializer : Expr_Access;
       end case;
    end record;
 end AST;

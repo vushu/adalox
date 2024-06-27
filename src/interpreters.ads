@@ -15,6 +15,7 @@ private
    function Evaluate_Unary_Expr (E : Expr_Access) return Literal;
    function Evaluate_Grouping_Expr (E : Expr_Access) return Literal;
    procedure Evaluate_Print_Stmt (S : Stmt_Access);
+   procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access);
    procedure Evaluate_Expression_Stmt (S : Stmt_Access);
    procedure Execute (Stmt : Stmt_Access);
 end Interpreters;

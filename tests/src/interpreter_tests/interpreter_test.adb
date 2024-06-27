@@ -18,35 +18,40 @@ package body Interpreter_Test is
    procedure Test_Interpreter is
       S      : constant String       := "(2+2)*2 / 2 == 4 and 1 != 0;";
       Tokens : constant Token_Vector := Scan_Tokens (S);
-      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
    begin
       Interpret (Stmts);
    end Test_Interpreter;
 
    procedure Test_Interpreter_Or_Logic is
       Tokens : constant Token_Vector := Scan_Tokens ("true or false;");
-      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
    begin
       Interpret (Stmts);
    end Test_Interpreter_Or_Logic;
 
    procedure Test_Interpreter_And_Logic is
       Tokens : constant Token_Vector := Scan_Tokens ("true and false;");
-      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
    begin
       Interpret (Stmts);
    end Test_Interpreter_And_Logic;
 
    procedure Test_Interpreter_Arithmetic is
       Tokens : constant Token_Vector := Scan_Tokens ("2 * 5 + 4;");
-      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
    begin
       Interpret (Stmts);
    end Test_Interpreter_Arithmetic;
 
    procedure Test_Interpreter_Plus is
       Tokens : constant Token_Vector := Scan_Tokens ("print 5 + 5;");
-      Stmts  : constant Stmt_Vector  := Parse (Tokens);
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
    begin
       Interpret (Stmts);
    end Test_Interpreter_Plus;

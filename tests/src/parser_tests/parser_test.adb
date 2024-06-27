@@ -40,13 +40,16 @@ package body Parser_Test is
         Create_Token
           (Semicolon_Token, ";", (String_Type, Make_Lexeme_String (";")));
 
-      Res : Stmt_Vector;
+      --  Res : Stmt_Vector;
+      P : Parser;
    begin
       Tokens.Append (Tok_Minus);
       Tokens.Append (Tok_Number);
       Tokens.Append (Tok_Semicolon);
       Tokens.Append (Create_EOF_Token);
-      Res := Parse (Tokens);
+      P := Parser'(0, Tokens);
+
+      --  Res := P.Parse;
    end Should_Parse;
 
    overriding function Name (T : Test) return AUnit.Message_String is
