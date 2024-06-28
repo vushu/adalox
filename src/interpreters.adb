@@ -170,25 +170,26 @@ package body Interpreters is
 
    procedure Execute_Block (Statements : Stmt_Vector; E : Environment_Access)
    is
-      P : Environment_Access := Env;
+      Prev : Environment_Access := Env;
    begin
       Env := E;
       for Stmt of Statements loop
          Execute (Stmt);
       end loop;
+      Env := Prev;
    exception
       when Error_Reports.Runtime_Error =>
          Put_Line ("Execute_Block failed!");
-         Env := P;
+         Env := Prev;
       when others                      =>
          Put_Line ("Execute_Block failed for others!");
-         Env := P;
+         Env := Prev;
 
    end Execute_Block;
 
    procedure Evaluate_Block_Stmt (S : Stmt_Access) is
    begin
-      null;
+      Execute_Block (S.Block_Statements, Make_Environment (Env));
    end Evaluate_Block_Stmt;
 
    procedure Execute (Stmt : Stmt_Access) is
@@ -200,6 +201,8 @@ package body Interpreters is
             Evaluate_Print_Stmt (Stmt);
          when Var_Decl_Stmt_Kind_Type =>
             Evaluate_Var_Decl_Stmt (Stmt);
+         when Block_Kind_Type =>
+            Evaluate_Block_Stmt (Stmt);
          when others =>
             null;
       end case;

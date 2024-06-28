@@ -249,7 +249,6 @@ package body Parsers is
    end Expression;
 
    function Parse (Self : in out Parser) return Stmt_Vector is
-
       Stmts : Stmt_Vector;
    begin
 
@@ -327,16 +326,43 @@ package body Parsers is
       function Block return Stmt_Vector is
          Statements : Stmt_Vector;
       begin
-         while Self.Check (Right_Brace_Token) and then not Self.Is_At_End loop
+         while not Self.Check (Right_Brace_Token) and then not Self.Is_At_End
+         loop
             Statements.Append (Self.Declaration);
          end loop;
          Self.Consume_Skip (Right_Brace_Token, "Expected '}' after block.");
          return Statements;
       end Block;
 
+      function If_Statement return Stmt_Access is
+         Condition : Expr_Access;
+      begin
+         Self.Consume_Skip (Left_Paren_Token, "Expect '(' after 'if'.");
+         Condition := Self.Expression;
+         Self.Consume_Skip
+           (Right_Paren_Token, "Expect ')' after if condition.");
+         declare
+            Then_Branch : Stmt_Access := Self.Statement;
+            Else_Branch : Stmt_Access;
+         begin
+            if Self.Match ((1 => Else_Token)) then
+               Else_Branch := Self.Statement;
+            end if;
+            return
+              new Stmt'
+                (Kind => If_Stmt_Kind_Type, If_Condition => Condition,
+                 If_Then_Branch => Then_Branch, If_Else_Branch => Else_Branch);
+         end;
+
+      end If_Statement;
+
    begin
       if Self.Match ((1 => Print_Token)) then
          return Print_Statement;
+      elsif Self.Match ((1 => Left_Brace_Token)) then
+         return new Stmt'(Block_Kind_Type, Block);
+      elsif Self.Match ((1 => If_Token)) then
+         return If_Statement;
       end if;
 
       return Expression_Statement;

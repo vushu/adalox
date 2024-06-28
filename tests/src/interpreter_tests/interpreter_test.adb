@@ -76,6 +76,29 @@ package body Interpreter_Test is
 
    end Test_Interpreter_Assign;
 
+   procedure Test_Interpreter_Scope is
+      -- Should print out:
+      --  inner a
+      --  outer b
+      --  global c
+      --  outer a
+      --  outer b
+      --  global c
+      --  global a
+      --  global b
+      --  global c
+      Tokens : constant Token_Vector :=
+        Scan_Tokens
+          ("var a = ""global a""; var b = ""global b""; var c = ""global c"";{" &
+           "var a = ""outer a""; var b = ""outer b"";{" &
+           "var a = ""inner a""; print a; print b; print c; }" &
+           "print a; print b; print c;} print a; print b; print c;");
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
+   begin
+      Interpret (Stmts);
+   end Test_Interpreter_Scope;
+
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
@@ -91,6 +114,7 @@ package body Interpreter_Test is
       Test_Interpreter_Plus;
       Test_Interpreter_Variable;
       Test_Interpreter_Assign;
+      Test_Interpreter_Scope;
    end Run_Test;
 
 end Interpreter_Test;

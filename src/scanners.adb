@@ -116,7 +116,7 @@ package body Scanners is
          --  The closing ".
          Skip;
 
-         Lexeme := Make_Lexeme_String (Source (Start + 1 .. Current - 1));
+         Lexeme := Make_Lexeme_String (Source (Start + 1 .. Current - 2));
          String_Var.String_Val := Lexeme;
 
          --  String_Var := (String_Val => Lexeme);
