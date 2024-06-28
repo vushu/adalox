@@ -358,6 +358,21 @@ package body Parsers is
          end;
       end If_Statement;
 
+      function While_Statement return Stmt_Access is
+         Condition  : Expr_Access;
+         While_Body : Stmt_Access;
+      begin
+         Self.Consume_Skip (Left_Paren_Token, "Expect '(' after 'while'.");
+         Condition := Self.Expression;
+         Self.Consume_Skip
+           (Right_Paren_Token, "Expect ')' after 'condition'.");
+         return
+           new Stmt'
+             (Kind       => While_Stmt_Kind_Type, While_Condition => Condition,
+              While_Body => While_Body);
+
+      end While_Statement;
+
    begin
       if Self.Match ((1 => Print_Token)) then
          return Print_Statement;
@@ -365,6 +380,8 @@ package body Parsers is
          return new Stmt'(Block_Kind_Type, Block);
       elsif Self.Match ((1 => If_Token)) then
          return If_Statement;
+      elsif Self.Match ((1 => While_Token)) then
+         return While_Statement;
       end if;
 
       return Expression_Statement;

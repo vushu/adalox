@@ -173,6 +173,14 @@ package body Interpreters is
          Execute (S.If_Else_Branch);
       end if;
    end Evaluate_If_Stmt;
+
+   procedure Evaluate_While_Stmt (S : Stmt_Access) is
+   begin
+      while Is_Truthy (Evaluate_Expr (S.While_Condition)) loop
+         Execute (S.While_Body);
+      end loop;
+   end Evaluate_While_Stmt;
+
    procedure Execute_Block (Statements : Stmt_Vector; E : Environment_Access)
    is
       Prev : Environment_Access := Env;
@@ -210,6 +218,8 @@ package body Interpreters is
             Evaluate_Block_Stmt (Stmt);
          when If_Stmt_Kind_Type =>
             Evaluate_If_Stmt (Stmt);
+         when While_Stmt_Kind_Type =>
+            null;
       end case;
    end Execute;
 

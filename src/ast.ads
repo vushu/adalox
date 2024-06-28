@@ -45,9 +45,8 @@ package AST is
                      --  Function_Stmt_Kind_Type,
                      If_Stmt_Kind_Type, Print_Stmt_Kind_Type,
                      --  Return_Stmt_Kind_Type,
-                     Var_Decl_Stmt_Kind_Type, Block_Kind_Type
-   --  While_Stmt_Kind_Type
-   );
+                     Var_Decl_Stmt_Kind_Type, Block_Kind_Type,
+      While_Stmt_Kind_Type);
 
    package Stmt_List is new Ada.Containers.Vectors
      (Index_Type => Natural, Element_Type => Stmt_Access);
@@ -66,6 +65,9 @@ package AST is
             If_Condition   : Expr_Access;
             If_Then_Branch : Stmt_Access;
             If_Else_Branch : Stmt_Access;
+         when While_Stmt_Kind_Type =>
+            While_Condition : Expr_Access;
+            While_Body      : Stmt_Access;
       end case;
    end record;
 end AST;
