@@ -61,6 +61,7 @@ package body Parsers is
          Skip (Self);
          return;
       end if;
+      Put_Line ("raised error: " & M);
       raise Parser_Error with "Error expected: " & M;
    end Consume_Skip;
 
@@ -261,6 +262,8 @@ package body Parsers is
          Self.Synchronize;
          Put_Line ("Got Parser Error! Synchronizing");
          return Stmts;
+      when others       =>
+         Put_Line ("Some unknown error occurred!");
    end Parse;
 
    procedure Synchronize (Self : in out Parser) is
@@ -343,7 +346,7 @@ package body Parsers is
            (Right_Paren_Token, "Expect ')' after if condition.");
          declare
             Then_Branch : Stmt_Access := Self.Statement;
-            Else_Branch : Stmt_Access;
+            Else_Branch : Stmt_Access := null;
          begin
             if Self.Match ((1 => Else_Token)) then
                Else_Branch := Self.Statement;
@@ -353,7 +356,6 @@ package body Parsers is
                 (Kind => If_Stmt_Kind_Type, If_Condition => Condition,
                  If_Then_Branch => Then_Branch, If_Else_Branch => Else_Branch);
          end;
-
       end If_Statement;
 
    begin

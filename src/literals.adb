@@ -36,7 +36,7 @@ package body Literals is
             when Nothing =>
                 return False;
             when Bool_Type =>
-                return False;
+                return L.Bool_Val;
             when others =>
                 return True;
         end case;

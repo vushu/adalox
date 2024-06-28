@@ -19,6 +19,7 @@ private
    function Evaluate_Variable_Expr (E : Expr_Access) return Literal;
    function Evaluate_Assign_Expr (E : Expr_Access) return Literal;
    procedure Evaluate_Print_Stmt (S : Stmt_Access);
+   procedure Evaluate_If_Stmt (S : Stmt_Access);
    procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access);
    procedure Evaluate_Expression_Stmt (S : Stmt_Access);
    procedure Evaluate_Block_Stmt (S : Stmt_Access);

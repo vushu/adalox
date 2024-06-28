@@ -62,14 +62,10 @@ package body Interpreters is
    function Evaluate_Logical_Expr (E : Expr_Access) return Literal is
       Left : constant Literal := Evaluate_Expr (E.Left);
    begin
-      if E.Op.Kind = Or_Token then
-         if Is_Truthy (Left) then
-            return Left;
-         else
-            if not Is_Truthy (Left) then
-               return Left;
-            end if;
-         end if;
+      if E.Op.Kind = Or_Token and then Is_Truthy (Left) then
+         return Left;
+      elsif E.Op.Kind = And_Token and then not Is_Truthy (Left) then
+         return Left;
       end if;
       return Evaluate_Expr (E.Right);
    end Evaluate_Logical_Expr;
@@ -168,6 +164,15 @@ package body Interpreters is
       Env.Define (S.Name.Lexeme, Value);
    end Evaluate_Var_Decl_Stmt;
 
+   procedure Evaluate_If_Stmt (S : Stmt_Access) is
+      Cond : Literal := Evaluate_Expr (S.If_Condition);
+   begin
+      if Is_Truthy (Cond) then
+         Execute (S.If_Then_Branch);
+      elsif S.If_Else_Branch /= null then
+         Execute (S.If_Else_Branch);
+      end if;
+   end Evaluate_If_Stmt;
    procedure Execute_Block (Statements : Stmt_Vector; E : Environment_Access)
    is
       Prev : Environment_Access := Env;
@@ -203,8 +208,8 @@ package body Interpreters is
             Evaluate_Var_Decl_Stmt (Stmt);
          when Block_Kind_Type =>
             Evaluate_Block_Stmt (Stmt);
-         when others =>
-            null;
+         when If_Stmt_Kind_Type =>
+            Evaluate_If_Stmt (Stmt);
       end case;
    end Execute;
 
