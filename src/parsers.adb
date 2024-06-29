@@ -366,6 +366,7 @@ package body Parsers is
          Condition := Self.Expression;
          Self.Consume_Skip
            (Right_Paren_Token, "Expect ')' after 'condition'.");
+         While_Body := Self.Statement;
          return
            new Stmt'
              (Kind       => While_Stmt_Kind_Type, While_Condition => Condition,

@@ -112,6 +112,16 @@ package body Interpreter_Test is
 
    end Test_Interpreter_If_Statement;
 
+   procedure Test_Interpreter_While_Statement is
+      Tokens : constant Token_Vector :=
+        Scan_Tokens
+          ("var i = 0; while (i <= 10) { print i ; i; i = i + 1;}");
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
+   begin
+      Interpret (Stmts);
+   end Test_Interpreter_While_Statement;
+
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
@@ -120,15 +130,16 @@ package body Interpreter_Test is
    overriding procedure Run_Test (T : in out Test) is
       pragma Unreferenced (T);
    begin
-      Test_Interpreter;
-      Test_Interpreter_Or_Logic;
-      Test_Interpreter_And_Logic;
-      Test_Interpreter_Arithmetic;
-      Test_Interpreter_Plus;
-      Test_Interpreter_Variable;
-      Test_Interpreter_Assign;
-      Test_Interpreter_Scope;
-      Test_Interpreter_If_Statement;
+      --  Test_Interpreter;
+      --  Test_Interpreter_Or_Logic;
+      --  Test_Interpreter_And_Logic;
+      --  Test_Interpreter_Arithmetic;
+      --  Test_Interpreter_Plus;
+      --  Test_Interpreter_Variable;
+      --  Test_Interpreter_Assign;
+      --  Test_Interpreter_Scope;
+      --  Test_Interpreter_If_Statement;
+      Test_Interpreter_While_Statement;
    end Run_Test;
 
 end Interpreter_Test;

@@ -104,6 +104,10 @@ package body Interpreters is
             return (Bool_Type, not Is_Equal (Left, Right));
          when Equal_Equal_Token =>
             return (Bool_Type, Is_Equal (Left, Right));
+         when Less_Token =>
+            return (Bool_Type, Left.Float_Val < Right.Float_Val);
+         when Less_Equal_Token =>
+            return (Bool_Type, Left.Float_Val <= Right.Float_Val);
          when others =>
             null;
       end case;
@@ -194,9 +198,9 @@ package body Interpreters is
       when Error_Reports.Runtime_Error =>
          Put_Line ("Execute_Block failed!");
          Env := Prev;
-      when others                      =>
-         Put_Line ("Execute_Block failed for others!");
-         Env := Prev;
+      --  when others                      =>
+      --     Put_Line ("Execute_Block failed for others!");
+      --     Env := Prev;
 
    end Execute_Block;
 
@@ -219,7 +223,7 @@ package body Interpreters is
          when If_Stmt_Kind_Type =>
             Evaluate_If_Stmt (Stmt);
          when While_Stmt_Kind_Type =>
-            null;
+            Evaluate_While_Stmt (Stmt);
       end case;
    end Execute;
 
