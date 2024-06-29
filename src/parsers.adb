@@ -374,6 +374,65 @@ package body Parsers is
 
       end While_Statement;
 
+      function For_Statement return Stmt_Access is
+         Initializer : Stmt_Access;
+         Condition   : Expr_Access;
+         Increment   : Expr_Access;
+         For_Body    : Stmt_Access;
+      begin
+         Self.Consume_Skip (Left_Paren_Token, "Expect '(' after 'for'.");
+         if Self.Match ((1 => Semicolon_Token)) then
+            Initializer := null;
+         elsif Self.Match ((1 => Var_Token)) then
+            Initializer := Self.Var_Declaration;
+         else
+            Initializer := Expression_Statement;
+         end if;
+
+         if not Self.Check (Semicolon_Token) then
+            Condition := Self.Expression;
+         end if;
+
+         Self.Consume_Skip
+           (Semicolon_Token, "Expect ';' after loop condition.");
+         if not Self.Check (Right_Paren_Token) then
+            Increment := Self.Expression;
+         end if;
+
+         Self.Consume_Skip
+           (Right_Paren_Token, "Expect ')' after for clauses.");
+
+         For_Body := Self.Statement;
+
+         if Increment /= null then
+            declare
+               Stmts : Stmt_Vector;
+            begin
+               Stmts.Append (For_Body);
+               Stmts.Append (new Stmt'(Expression_Kind_Type, Increment));
+               For_Body := new Stmt'(Block_Kind_Type, Stmts);
+            end;
+         end if;
+
+         if Condition = null then
+            Condition := new Expr'(Literal_Kind_Type, (Bool_Type, True));
+         end if;
+
+         For_Body := new Stmt'(While_Stmt_Kind_Type, Condition, For_Body);
+
+         if Initializer /= null then
+            declare
+               Stmts : Stmt_Vector;
+            begin
+               Stmts.Append (Initializer);
+               Stmts.Append (For_Body);
+               For_Body := new Stmt'(Block_Kind_Type, Stmts);
+            end;
+         end if;
+
+         return For_Body;
+      end For_Statement;
+
    begin
       if Self.Match ((1 => Print_Token)) then
          return Print_Statement;
@@ -383,6 +442,8 @@ package body Parsers is
          return If_Statement;
       elsif Self.Match ((1 => While_Token)) then
          return While_Statement;
+      elsif Self.Match ((1 => For_Token)) then
+         return For_Statement;
       end if;
 
       return Expression_Statement;
