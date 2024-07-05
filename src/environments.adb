@@ -4,13 +4,14 @@ with Error_Reports;
 package body Environments is
 
    procedure Define
-     (Self : in out Environment; Name : Lexeme_String; Value : Literal)
+     (Self : in out Environment; Name : Lexeme_String; Value : Lox_Primitive)
    is
    begin
       Self.Values.Include (Name, Value);
    end Define;
 
-   function Get (Self : in out Environment; Name : Token) return Literal is
+   function Get (Self : in out Environment; Name : Token) return Lox_Primitive
+   is
       Runtime_Error : exception;
       Cursor : constant Environment_Values.Cursor :=
         Self.Values.Find (Name.Lexeme);
@@ -27,7 +28,8 @@ package body Environments is
         with "Undefined variable '" & Name.Lexeme.To_String & "'.";
    end Get;
 
-   procedure Assign (Self : in out Environment; Name : Token; Value : Literal)
+   procedure Assign
+     (Self : in out Environment; Name : Token; Value : Lox_Primitive)
    is
    begin
 

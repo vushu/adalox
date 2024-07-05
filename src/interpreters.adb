@@ -37,7 +37,7 @@ package body Interpreters is
       raise Runtime_Error with "Operands must be numbers";
    end Check_Number_Operands;
 
-   function Evaluate_Expr (E : Expr_Access) return Literal is
+   function Evaluate_Expr (E : Expr_Access) return Lox_Primitive is
    begin
       case E.Kind is
          when Unary_Kind_Type =>
@@ -53,14 +53,14 @@ package body Interpreters is
          when Binary_Kind_Type =>
             return Evaluate_Binary_Expr (E);
          when Literal_Kind_Type =>
-            return E.Value;
+            return (Literal_Result_Type, E.Value);
          when others =>
-            return (Kind => Nothing);
+            return (Kind => Nothing_Primitive);
       end case;
    end Evaluate_Expr;
 
-   function Evaluate_Logical_Expr (E : Expr_Access) return Literal is
-      Left : constant Literal := Evaluate_Expr (E.Left);
+   function Evaluate_Logical_Expr (E : Expr_Access) return Lox_Primitive is
+      Left : constant Lox_Primitive := Evaluate_Expr (E.Left);
    begin
       if E.Op.Kind = Or_Token and then Is_Truthy (Left) then
          return Left;
@@ -70,44 +70,76 @@ package body Interpreters is
       return Evaluate_Expr (E.Right);
    end Evaluate_Logical_Expr;
 
-   function Evaluate_Binary_Expr (E : Expr_Access) return Literal is
-      Left  : constant Literal := Evaluate_Expr (E.Left);
-      Right : constant Literal := Evaluate_Expr (E.Right);
+   function Evaluate_Binary_Expr (E : Expr_Access) return Lox_Primitive is
+      Left  : constant Lox_Primitive := Evaluate_Expr (E.Left);
+      Right : constant Lox_Primitive := Evaluate_Expr (E.Right);
    begin
       case E.Op.Kind is
          when Minus_Token =>
-            Check_Number_Operands (E.Op, Left, Right);
-            return (Float_Type, Float_Val => Left.Float_Val + Right.Float_Val);
+            Check_Number_Operands (E.Op, Left.Lit, Right.Lit);
+            return
+              (Literal_Result_Type,
+               (Float_Type,
+                Float_Val =>
+                  Left.Lit.Float_Val + Right.Lit.Float_Val));
          when Slash_Token =>
-            Check_Number_Operands (E.Op, Left, Right);
-            return (Float_Type, Float_Val => Left.Float_Val / Right.Float_Val);
+            Check_Number_Operands (E.Op, Left.Lit, Right.Lit);
+            return
+              (Literal_Result_Type,
+               (Float_Type,
+                Float_Val =>
+                  Left.Lit.Float_Val / Right.Lit.Float_Val));
          when Star_Token =>
-            Check_Number_Operands (E.Op, Left, Right);
-            return (Float_Type, Float_Val => Left.Float_Val * Right.Float_Val);
+            Check_Number_Operands (E.Op, Left.Lit, Right.Lit);
+            return
+              (Literal_Result_Type,
+               (Float_Type,
+                Float_Val =>
+                  Left.Lit.Float_Val * Right.Lit.Float_Val));
          when Plus_Token =>
-            if Left.Kind = Float_Type and then Right.Kind = Float_Type then
-               return Literal'(Float_Type, Left.Float_Val + Right.Float_Val);
-            elsif Left.Kind = String_Type and then Right.Kind = String_Type
+            if Left.Lit.Kind = Float_Type
+              and then Right.Lit.Kind = Float_Type
             then
                return
-                 (String_Type,
-                  Make_Lexeme_String
-                    (Left.String_Val.To_String & Right.String_Val.To_String));
+                 Lox_Primitive'
+                   (Literal_Result_Type,
+                    Literal'
+                      (Float_Type,
+                       Left.Lit.Float_Val + Right.Lit.Float_Val));
+            elsif Left.Lit.Kind = String_Type
+              and then Right.Lit.Kind = String_Type
+            then
+               return
+                 Lox_Primitive'
+                   (Literal_Result_Type,
+                    (String_Type,
+                     Make_Lexeme_String
+                       (Left.Lit.String_Val.To_String &
+                        Right.Lit.String_Val.To_String)));
             end if;
             raise Runtime_Error
               with "Operands must be two numbers or two strings.";
          when Greater_Token =>
-            return (Bool_Type, Left.Float_Val > Right.Float_Val);
+            return
+              (Literal_Result_Type,
+               (Bool_Type, Left.Lit.Float_Val > Right.Lit.Float_Val));
          when Greater_Equal_Token =>
-            return (Bool_Type, Left.Float_Val >= Right.Float_Val);
+            return
+              (Literal_Result_Type,
+               (Bool_Type, Left.Lit.Float_Val >= Right.Lit.Float_Val));
          when Bang_Equal_Token =>
-            return (Bool_Type, not Is_Equal (Left, Right));
+            return
+              (Literal_Result_Type, (Bool_Type, not Is_Equal (Left, Right)));
          when Equal_Equal_Token =>
-            return (Bool_Type, Is_Equal (Left, Right));
+            return (Literal_Result_Type, (Bool_Type, Is_Equal (Left, Right)));
          when Less_Token =>
-            return (Bool_Type, Left.Float_Val < Right.Float_Val);
+            return
+              (Literal_Result_Type,
+               (Bool_Type, Left.Lit.Float_Val < Right.Lit.Float_Val));
          when Less_Equal_Token =>
-            return (Bool_Type, Left.Float_Val <= Right.Float_Val);
+            return
+              (Literal_Result_Type,
+               (Bool_Type, Left.Lit.Float_Val <= Right.Lit.Float_Val));
          when others =>
             null;
       end case;
@@ -115,52 +147,59 @@ package body Interpreters is
         with "Unknown binary operator: " & E.Op.Lexeme.To_String;
    end Evaluate_Binary_Expr;
 
-   function Evaluate_Unary_Expr (E : Expr_Access) return Literal is
-      Right : Literal := Evaluate_Expr (E.Unary_Right);
+   function Evaluate_Unary_Expr (E : Expr_Access) return Lox_Primitive is
+      Right : Lox_Primitive := Evaluate_Expr (E.Unary_Right);
    begin
       case E.Unary_Op.Kind is
          when Bang_Token =>
-            return (Bool_Type, not Is_Truthy (Right));
+            return
+              (Literal_Result_Type,
+               (Bool_Type, not Is_Truthy (Right)));
          when Minus_Token =>
-            Check_Number_Operand (E.Unary_Op, Right);
-            return (Float_Type, -Right.Float_Val);
+            Check_Number_Operand (E.Unary_Op, Right.Lit);
+            return
+              (Literal_Result_Type, (Float_Type, -Right.Lit.Float_Val));
          when others =>
-            return (Kind => Nothing);
+            return (Kind => Nothing_Primitive);
       end case;
 
    end Evaluate_Unary_Expr;
 
-   function Evaluate_Grouping_Expr (E : Expr_Access) return Literal is
+   function Evaluate_Grouping_Expr (E : Expr_Access) return Lox_Primitive is
    begin
       return Evaluate_Expr (E);
    end Evaluate_Grouping_Expr;
 
-   function Evaluate_Variable_Expr (E : Expr_Access) return Literal is
+   function Evaluate_Variable_Expr (E : Expr_Access) return Lox_Primitive is
    begin
       return Env.Get (E.Variable_Name);
    end Evaluate_Variable_Expr;
 
-   function Evaluate_Assign_Expr (E : Expr_Access) return Literal is
-      Value : Literal := Evaluate_Expr (E.Assign_Value);
+   function Evaluate_Assign_Expr (E : Expr_Access) return Lox_Primitive is
+      Value : Lox_Primitive := Evaluate_Expr (E.Assign_Value);
    begin
       Env.Assign (E.Assign_Name, Value);
       return Value;
    end Evaluate_Assign_Expr;
 
+   --  function Evaluate_Call_Expr (E : Expr_Access) return Literal is
+   --  begin
+   --  end Evaluate_Call_Expr;
+
    procedure Evaluate_Print_Stmt (S : Stmt_Access) is
-      Value : Literal := Evaluate_Expr (S.Expression);
+      Value : Lox_Primitive := Evaluate_Expr (S.Expression);
    begin
       Put_Line (Stringify (Value));
    end Evaluate_Print_Stmt;
 
    procedure Evaluate_Expression_Stmt (S : Stmt_Access) is
-      Res : Literal;
+      Res : Lox_Primitive;
    begin
       Res := Evaluate_Expr (S.Expression);
    end Evaluate_Expression_Stmt;
 
    procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access) is
-      Value : Literal := (Kind => Nothing);
+      Value : Lox_Primitive := (Kind => Nothing_Primitive);
    begin
       if S.Initializer /= null then
          Value := Evaluate_Expr (S.Initializer);
@@ -169,7 +208,7 @@ package body Interpreters is
    end Evaluate_Var_Decl_Stmt;
 
    procedure Evaluate_If_Stmt (S : Stmt_Access) is
-      Cond : Literal := Evaluate_Expr (S.If_Condition);
+      Cond : Lox_Primitive := Evaluate_Expr (S.If_Condition);
    begin
       if Is_Truthy (Cond) then
          Execute (S.If_Then_Branch);

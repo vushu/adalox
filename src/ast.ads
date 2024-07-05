@@ -1,14 +1,20 @@
-with Tokens;   use Tokens;
-with Literals; use Literals;
+with Tokens;         use Tokens;
+with Literals;       use Literals;
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
+with Lox_Primitives; use Lox_Primitives;
 package AST is
    type Expr;
    type Expr_Access is access Expr;
+
+   package Expr_List is new Ada.Containers.Vectors
+     (Index_Type => Natural, Element_Type => Expr_Access);
+   subtype Expr_Vector is Expr_List.Vector;
+
    type Expr_Kind is
      (Unary_Kind_Type, Binary_Kind_Type, Grouping_Kind_Type, Literal_Kind_Type,
-      Variable_Kind_Type, Logical_Kind_Type, Assign_Kind_Type);
+      Variable_Kind_Type, Logical_Kind_Type, Assign_Kind_Type, Call_Kind_Type);
 
    type Expr (Kind : Expr_Kind) is record
       case Kind is
@@ -28,12 +34,12 @@ package AST is
             Value : Literal;
          when Variable_Kind_Type =>
             Variable_Name : Token;
+         when Call_Kind_Type =>
+            Callee    : Expr_Access;
+            Paren     : Token;
+            Arguments : Expr_Vector;
       end case;
    end record;
-
-   package Expr_List is new Ada.Containers.Vectors
-     (Index_Type => Natural, Element_Type => Expr_Access);
-   subtype Expr_Vector is Expr_List.Vector;
 
    type Stmt;
    type Stmt_Access is access Stmt;

@@ -3,6 +3,7 @@ with Literals;       use Literals;
 with Ada.Text_IO;    use Ada.Text_IO;
 with Lexeme_Strings; use Lexeme_Strings;
 with Error_Reports;
+with Ada.Containers.Vectors;
 package body Parsers is
 
    function Peek (Self : Parser) return Token is
@@ -104,6 +105,39 @@ package body Parsers is
          raise Parser_Error;
       end Primary;
 
+      function Finish_Call (Callee : Expr_Access) return Expr_Access is
+         Arguments : Expr_Vector;
+         Paren     : Token;
+         Max_Args  : constant Natural := 255;
+      begin
+         if not Self.Check (Right_Paren_Token) then
+            loop
+               if Natural(Arguments.Length) > Max_Args then
+                  Error_Reports.Error
+                    (Self.Peek, "Can't have more than 255 arguments.");
+               end if;
+               Arguments.Append (Self.Expression);
+               exit when Self.Match ((1 => Comma_Token));
+            end loop;
+         end if;
+         Paren :=
+           Self.Consume (Right_Paren_Token, "Expect ')' after arguments.");
+         return
+           new Expr'
+             (Kind      => Call_Kind_Type, Callee => Callee, Paren => Paren,
+              Arguments => Arguments);
+      end Finish_Call;
+
+      function Call return Expr_Access is
+         E : Expr_Access := Primary;
+      begin
+         loop
+            exit when not Self.Match ((1 => Left_Paren_Token));
+            E := Finish_Call (E);
+         end loop;
+         return E;
+      end Call;
+
       function Unary return Expr_Access is
       begin
          if Self.Match ((Bang_Token, Minus_Token)) then
@@ -114,7 +148,7 @@ package body Parsers is
                return new Expr'(Unary_Kind_Type, Right, Op);
             end;
          end if;
-         return Primary;
+         return Call;
       end Unary;
 
       function Factor return Expr_Access is
@@ -264,6 +298,7 @@ package body Parsers is
          return Stmts;
       when others       =>
          Put_Line ("Some unknown error occurred!");
+         null;
    end Parse;
 
    procedure Synchronize (Self : in out Parser) is

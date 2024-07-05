@@ -23,7 +23,6 @@ package body Interpreter_Test is
    begin
       Interpret (Stmts);
    end Test_Interpreter;
-
    procedure Test_Interpreter_Or_Logic is
       Tokens : constant Token_Vector :=
         Scan_Tokens ("true or false; print nil or ""yes"";");

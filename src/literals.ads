@@ -19,8 +19,4 @@ package Literals is
             null;
       end case;
    end record;
-
-   function Stringify (L : Literal) return String;
-   function Is_Truthy (L : Literal) return Boolean;
-   function Is_Equal (A : Literal; B : Literal) return Boolean;
 end Literals;
