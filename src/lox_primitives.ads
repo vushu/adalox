@@ -6,7 +6,7 @@ package Lox_Primitives is
 
     type Lox_Primitive_Kind is
        (Literal_Result_Type, Function_Result_Type, Nothing_Primitive);
-    type Function_Access is access Lox_Functions.Lox_Callable;
+    type Function_Access is access Lox_Functions.Lox_Callable'Class;
     type Lox_Primitive (Kind : Lox_Primitive_Kind := Nothing_Primitive) is
     record
         case Kind is

@@ -184,8 +184,7 @@ package body Interpreters is
       for Arg of E.Arguments loop
          Arguments.Append (Evaluate_Expr (Arg));
       end loop;
-      --  return Func.Call (Arguments);
-      return (Kind => Nothing_Primitive);
+      return Func.Call (Arguments);
 
    end Evaluate_Call_Expr;
 
