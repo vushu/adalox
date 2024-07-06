@@ -1,16 +1,22 @@
 with Error_Reports;
-with Ada.Text_IO;    use Ada.Text_IO;
+with Ada.Text_IO;          use Ada.Text_IO;
 with Ada.Float_Text_IO;
-with AST;            use AST;
-with Tokens;         use Tokens;
-with Lexeme_Strings; use Lexeme_Strings;
-with Lox_Functions;  use Lox_Functions;
-with Lox_Primitives; use Lox_Primitives;
+with AST;                  use AST;
+with Tokens;               use Tokens;
+with Lexeme_Strings;       use Lexeme_Strings;
+with Lox_Functions;        use Lox_Functions;
+with Lox_Primitives;       use Lox_Primitives;
+with Lox_Native_Functions; use Lox_Native_Functions;
 package body Interpreters is
 
    procedure Interpret (Statements : AST.Stmt_Vector) is
+      Clock_Func : Function_Access;
    begin
-      Env := new Environment;
+      Clock_Func := new Clock_Function;
+      Env        := new Environment;
+      Env.Define
+        (Make_Lexeme_String ("clock"),
+         Lox_Primitive'(Function_Result_Type, Clock_Func));
       for Statement of Statements loop
          Execute (Statement);
       end loop;
@@ -177,13 +183,29 @@ package body Interpreters is
    end Evaluate_Assign_Expr;
 
    function Evaluate_Call_Expr (E : Expr_Access) return Lox_Primitive is
-      Callee    : Lox_Primitive   := Evaluate_Expr (E.Callee);
+      Callee    : Lox_Primitive := Evaluate_Expr (E.Callee);
       Arguments : Lox_Primitive_Vector;
-      Func      : Function_Access := Callee.Callable;
+      Func      : Function_Access;
    begin
+
+      if Callee.Kind /= Function_Result_Type then
+         raise Runtime_Error with "Can only call functions and classes.";
+      end if;
+
+      Func := Callee.Callable;
+
       for Arg of E.Arguments loop
          Arguments.Append (Evaluate_Expr (Arg));
       end loop;
+
+      if Natural (Arguments.Length) /= Func.Arity then
+         Error_Reports.Error
+           (E.Paren,
+            "Expected " & Func.Arity'Image & " arguments but got " &
+            Arguments.Length'Image & ".");
+
+      end if;
+
       return Func.Call (Arguments);
 
    end Evaluate_Call_Expr;

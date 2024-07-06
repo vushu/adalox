@@ -1,7 +1,7 @@
-with AST;               use AST;
-with Literals;          use Literals;
+with AST;            use AST;
+with Literals;       use Literals;
 with Tokens;
-with Environments;      use Environments;
+with Environments;   use Environments;
 with Lox_Primitives; use Lox_Primitives;
 package Interpreters is
    type Interpreter is tagged record
@@ -12,7 +12,8 @@ package Interpreters is
    procedure Interpret (Statements : AST.Stmt_Vector);
    --  function Interpret (Statements : AST.Stmt_Vector) return Lit;
 private
-   Env : Environment_Access;
+   Globals : Environment_Access;
+   Env     : Environment_Access := Globals;
    procedure Check_Number_Operand (T : Tokens.Token; Operand : Literal);
    procedure Check_Number_Operands
      (T : Tokens.Token; Left : Literal; Right : Literal);

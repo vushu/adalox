@@ -131,6 +131,17 @@ package body Interpreter_Test is
 
    end Test_Interpreter_For_Statement;
 
+   procedure Test_Interpreter_Clock_Function_Call is
+      Tokens : constant Token_Vector :=
+        Scan_Tokens
+          ("clock();");
+      P      : Parser                := (0, Tokens);
+      Stmts  : constant Stmt_Vector  := P.Parse;
+   begin
+      Interpret (Stmts);
+
+   end Test_Interpreter_Clock_Function_Call;
+
    overriding function Name (T : Test) return AUnit.Message_String is
       pragma Unreferenced (T);
    begin
@@ -150,6 +161,7 @@ package body Interpreter_Test is
       Test_Interpreter_If_Statement;
       Test_Interpreter_While_Statement;
       Test_Interpreter_For_Statement;
+      Test_Interpreter_Clock_Function_Call;
    end Run_Test;
 
 end Interpreter_Test;
