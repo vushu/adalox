@@ -23,7 +23,7 @@ private
    function Evaluate_Grouping_Expr (E : Expr_Access) return Lox_Primitive;
    function Evaluate_Variable_Expr (E : Expr_Access) return Lox_Primitive;
    function Evaluate_Assign_Expr (E : Expr_Access) return Lox_Primitive;
-   --  function Evaluate_Call_Expr (E : Expr_Access) return Literal;
+   function Evaluate_Call_Expr (E : Expr_Access) return Lox_Primitive;
    procedure Evaluate_Print_Stmt (S : Stmt_Access);
    procedure Evaluate_If_Stmt (S : Stmt_Access);
    procedure Evaluate_Var_Decl_Stmt (S : Stmt_Access);

@@ -4,6 +4,8 @@ with Ada.Float_Text_IO;
 with AST;            use AST;
 with Tokens;         use Tokens;
 with Lexeme_Strings; use Lexeme_Strings;
+with Lox_Functions;  use Lox_Functions;
+with Lox_Primitives; use Lox_Primitives;
 package body Interpreters is
 
    procedure Interpret (Statements : AST.Stmt_Vector) is
@@ -80,32 +82,27 @@ package body Interpreters is
             return
               (Literal_Result_Type,
                (Float_Type,
-                Float_Val =>
-                  Left.Lit.Float_Val + Right.Lit.Float_Val));
+                Float_Val => Left.Lit.Float_Val + Right.Lit.Float_Val));
          when Slash_Token =>
             Check_Number_Operands (E.Op, Left.Lit, Right.Lit);
             return
               (Literal_Result_Type,
                (Float_Type,
-                Float_Val =>
-                  Left.Lit.Float_Val / Right.Lit.Float_Val));
+                Float_Val => Left.Lit.Float_Val / Right.Lit.Float_Val));
          when Star_Token =>
             Check_Number_Operands (E.Op, Left.Lit, Right.Lit);
             return
               (Literal_Result_Type,
                (Float_Type,
-                Float_Val =>
-                  Left.Lit.Float_Val * Right.Lit.Float_Val));
+                Float_Val => Left.Lit.Float_Val * Right.Lit.Float_Val));
          when Plus_Token =>
-            if Left.Lit.Kind = Float_Type
-              and then Right.Lit.Kind = Float_Type
+            if Left.Lit.Kind = Float_Type and then Right.Lit.Kind = Float_Type
             then
                return
                  Lox_Primitive'
                    (Literal_Result_Type,
                     Literal'
-                      (Float_Type,
-                       Left.Lit.Float_Val + Right.Lit.Float_Val));
+                      (Float_Type, Left.Lit.Float_Val + Right.Lit.Float_Val));
             elsif Left.Lit.Kind = String_Type
               and then Right.Lit.Kind = String_Type
             then
@@ -152,13 +149,10 @@ package body Interpreters is
    begin
       case E.Unary_Op.Kind is
          when Bang_Token =>
-            return
-              (Literal_Result_Type,
-               (Bool_Type, not Is_Truthy (Right)));
+            return (Literal_Result_Type, (Bool_Type, not Is_Truthy (Right)));
          when Minus_Token =>
             Check_Number_Operand (E.Unary_Op, Right.Lit);
-            return
-              (Literal_Result_Type, (Float_Type, -Right.Lit.Float_Val));
+            return (Literal_Result_Type, (Float_Type, -Right.Lit.Float_Val));
          when others =>
             return (Kind => Nothing_Primitive);
       end case;
@@ -182,9 +176,18 @@ package body Interpreters is
       return Value;
    end Evaluate_Assign_Expr;
 
-   --  function Evaluate_Call_Expr (E : Expr_Access) return Literal is
-   --  begin
-   --  end Evaluate_Call_Expr;
+   function Evaluate_Call_Expr (E : Expr_Access) return Lox_Primitive is
+      Callee    : Lox_Primitive   := Evaluate_Expr (E.Callee);
+      Arguments : Lox_Primitive_Vector;
+      Func      : Function_Access := Callee.Callable;
+   begin
+      for Arg of E.Arguments loop
+         Arguments.Append (Evaluate_Expr (Arg));
+      end loop;
+      --  return Func.Call (Arguments);
+      return (Kind => Nothing_Primitive);
+
+   end Evaluate_Call_Expr;
 
    procedure Evaluate_Print_Stmt (S : Stmt_Access) is
       Value : Lox_Primitive := Evaluate_Expr (S.Expression);

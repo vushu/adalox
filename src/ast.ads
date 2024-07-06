@@ -3,7 +3,7 @@ with Literals;       use Literals;
 with Ada.Containers.Vectors;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
-with Lox_Primitives; use Lox_Primitives;
+--  with Lox_Primitives; use Lox_Primitives;
 package AST is
    type Expr;
    type Expr_Access is access Expr;
