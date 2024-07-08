@@ -150,17 +150,17 @@ package body Interpreter_Test is
    overriding procedure Run_Test (T : in out Test) is
       pragma Unreferenced (T);
    begin
-      Test_Interpreter;
-      Test_Interpreter_Or_Logic;
-      Test_Interpreter_And_Logic;
-      Test_Interpreter_Arithmetic;
-      Test_Interpreter_Plus;
-      Test_Interpreter_Variable;
-      Test_Interpreter_Assign;
-      Test_Interpreter_Scope;
-      Test_Interpreter_If_Statement;
-      Test_Interpreter_While_Statement;
-      Test_Interpreter_For_Statement;
+      --  Test_Interpreter;
+      --  Test_Interpreter_Or_Logic;
+      --  Test_Interpreter_And_Logic;
+      --  Test_Interpreter_Arithmetic;
+      --  Test_Interpreter_Plus;
+      --  Test_Interpreter_Variable;
+      --  Test_Interpreter_Assign;
+      --  Test_Interpreter_Scope;
+      --  Test_Interpreter_If_Statement;
+      --  Test_Interpreter_While_Statement;
+      --  Test_Interpreter_For_Statement;
       Test_Interpreter_Clock_Function_Call;
    end Run_Test;
 

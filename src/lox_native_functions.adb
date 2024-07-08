@@ -7,7 +7,7 @@ with Ada.Text_IO;    use Ada.Text_IO;
 package body Lox_Native_Functions is
    overriding function Arity (Self : Clock_Function) return Natural is
    begin
-      return 1;
+      return 0;
    end Arity;
 
    overriding function Call

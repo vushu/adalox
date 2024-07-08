@@ -62,6 +62,8 @@ package body Interpreters is
             return Evaluate_Binary_Expr (E);
          when Literal_Kind_Type =>
             return (Literal_Result_Type, E.Value);
+         when Call_Kind_Type =>
+            return Evaluate_Call_Expr (E);
          when others =>
             return (Kind => Nothing_Primitive);
       end case;
@@ -187,7 +189,6 @@ package body Interpreters is
       Arguments : Lox_Primitive_Vector;
       Func      : Function_Access;
    begin
-
       if Callee.Kind /= Function_Result_Type then
          raise Runtime_Error with "Can only call functions and classes.";
       end if;
@@ -201,7 +202,7 @@ package body Interpreters is
       if Natural (Arguments.Length) /= Func.Arity then
          Error_Reports.Error
            (E.Paren,
-            "Expected " & Func.Arity'Image & " arguments but got " &
+            "Expected" & Func.Arity'Image & " arguments but got " &
             Arguments.Length'Image & ".");
 
       end if;
