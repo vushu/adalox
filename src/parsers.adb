@@ -112,12 +112,12 @@ package body Parsers is
       begin
          if not Self.Check (Right_Paren_Token) then
             loop
-               if Natural(Arguments.Length) > Max_Args then
+               if Natural (Arguments.Length) > Max_Args then
                   Error_Reports.Error
                     (Self.Peek, "Can't have more than 255 arguments.");
                end if;
                Arguments.Append (Self.Expression);
-               exit when Self.Match ((1 => Comma_Token));
+               exit when not Self.Match ((1 => Comma_Token));
             end loop;
          end if;
          Paren :=
