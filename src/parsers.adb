@@ -196,7 +196,7 @@ package body Parsers is
          loop
             declare
                Op    : constant Token       := Self.Previous;
-               Right : constant Expr_Access := Factor;
+               Right : constant Expr_Access := Term;
             begin
                E :=
                  new Expr'

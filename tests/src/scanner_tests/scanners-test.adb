@@ -34,6 +34,22 @@ package body Scanners.Test is
       Assert (T.Lexeme = Input_String, "Should be the same");
    end Test_Handling_String;
 
+ procedure Test_Handling_Number is
+      Input_String : constant String       := "2.22.2";
+      TokenList    : constant Token_Vector := Scan_Tokens (Input_String);
+      T            : constant Token        := TokenList (0);
+      T2            : constant Token        := TokenList (1);
+      T3            : constant Token        := TokenList (2);
+   begin
+      Print_Lexeme (T);
+      Print_Lexeme (T2);
+      Print_Lexeme (T3);
+      Assert (T.Lexeme = "2.22", "Should be the same");
+      Assert (T2.Lexeme = ".", "Should be the same");
+      Assert (T3.Lexeme = "2", "Should be the same");
+   end Test_Handling_Number;
+
+
    procedure Test_Tab_String is
       Tab          : constant Character    := Character'Val (9);
       Input_String : constant String       := "" & Tab;
@@ -62,5 +78,6 @@ package body Scanners.Test is
       Test_Handling_String;
       Test_Handling_Identifier;
       Test_Tab_String;
+      Test_Handling_Number;
    end Run_Test;
 end Scanners.Test;
